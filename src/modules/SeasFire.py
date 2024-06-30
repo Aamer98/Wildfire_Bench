@@ -22,7 +22,7 @@ from climax.utils.metrics import (
 from climax.utils.pos_embed import interpolate_pos_embed
 
 
-class SeasfireModule(LightningModule):
+class SeasFireModule(LightningModule):
     """Lightning module for global forecasting with the ClimaX model.
 
     Args:
