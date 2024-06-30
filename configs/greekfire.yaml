@@ -23,7 +23,7 @@ trainer:
   fast_dev_run: false
 
   logger:
-    class_path: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
+    class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
       save_dir: ${trainer.default_root_dir}/logs
       name: null
@@ -154,8 +154,6 @@ data:
   num_workers: 1
   pin_memory: False
 
-
-
   sel_dynamic_features: [
       '1 km 16 days NDVI',
       'LST_Day_1km',
@@ -167,19 +165,17 @@ data:
       'sminx',
       'era5_max_wind_speed',
       'era5_min_rh',
-  ]
-
+      ]
 
   sel_static_features : [
-  'dem_mean',
-  'slope_mean',
-  'roads_distance',
-  'waterway_distance',
-  'population_density',
-  ]
+      'dem_mean',
+      'slope_mean',
+      'roads_distance',
+      'waterway_distance',
+      'population_density',
+      ]
 
   clc: 'vec'
-
   access_mode: 'spatial'
-  problem_class: 'segmentation'
+  problem_class: 'classification'
   nan_fill: -1.0

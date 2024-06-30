@@ -137,8 +137,5 @@ dmypy.json
 # vscode setting
 .vscode
 
-# experiments
-exps
-
 # snakemake logs
 .snakemake

@@ -23,7 +23,7 @@ trainer:
   fast_dev_run: false
 
   logger:
-    class_path: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
+    class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
       save_dir: ${trainer.default_root_dir}/logs
       name: null
@@ -88,7 +88,8 @@ model:
           't2m_mean',
           'tp',
           'vpd',
-          'gwis_ba']
+          'gwis_ba'
+            ]
       img_size: [128, 128]
       patch_size: 2
       embed_dim: 1024
@@ -112,13 +113,13 @@ data:
       'swvl1',
       't2m_mean',
       'tp',
-      'vpd']
-  # out_variables: ['burned area']
+      'vpd'
+      ]
+  out_variables: ['gwis_ba']
   predict_range: 192
   hrs_each_step: 1 # play around with this later, unsure if its supposed to be 24 since dataset resolution is 24
   buffer_size: 10000
   batch_size: 2
   num_workers: 1
   pin_memory: False
-
   positional_vars: ['cos_lat', 'sin_lat', 'cos_lon', 'sin_lon']

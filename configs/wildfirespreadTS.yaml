@@ -23,7 +23,7 @@ trainer:
   fast_dev_run: false
 
   logger:
-    class_path: pytorch_lightning.loggers.tensorboard.TensorBoardLogger
+    class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
       save_dir: ${trainer.default_root_dir}/logs
       name: null
