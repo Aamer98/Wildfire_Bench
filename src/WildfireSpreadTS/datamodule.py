@@ -45,7 +45,6 @@ class WildfireSpreadTSDataModule(LightningDataModule):
         root_dir,
         variables,
         buffer_size,
-
         n_leading_observations: int,
         n_leading_observations_test_adjustment: int,
         crop_side_length: int,
@@ -54,14 +53,12 @@ class WildfireSpreadTSDataModule(LightningDataModule):
         features_to_keep: Union[Optional[List[int]], str] = None,
         return_doy: bool = False,
         data_fold_id: int = 0,
-
         out_variables=None,
         predict_range: int = 6,
         hrs_each_step: int = 1,
         batch_size: int = 64,
         num_workers: int = 0,
         pin_memory: bool = False,
-
     ):
         super().__init__()
         if num_workers > 1:
@@ -82,7 +79,6 @@ class WildfireSpreadTSDataModule(LightningDataModule):
         self.data_val: Optional[IterableDataset] = None
         self.data_test: Optional[IterableDataset] = None
 
-        # imported vars from wildfireTS
         self.n_leading_observations = n_leading_observations
         self.n_leading_observations_test_adjustment = n_leading_observations_test_adjustment
         self.crop_side_length = crop_side_length
@@ -193,7 +189,6 @@ class WildfireSpreadTSDataModule(LightningDataModule):
             collate_fn=collate_fn,
         )
 
-    # Imported from WildfireSpreadTS
     @staticmethod
     def split_fires(data_fold_id):
         """_summary_ Split the years into train/val/test set.
