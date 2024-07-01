@@ -10,6 +10,7 @@ import torch
 from torch.utils.data import Dataset
 from torch.utils.data.dataset import T_co
 import torchvision.transforms.functional as TF
+
 from WildfireSpreadTS.utils import get_means_stds_missing_values, get_indices_of_degree_features
 
 
@@ -108,7 +109,6 @@ class WildfireSpreadTSDataset(Dataset):
         Returns:
             (int, str, int): _description_ Year, name of fire, index of data point within fire.
         """
-
         # Handle negative indexing, e.g. -1 should be the last item in the dataset
         if target_id < 0:
             target_id = self.length + target_id
@@ -149,7 +149,6 @@ class WildfireSpreadTSDataset(Dataset):
             y is a tensor of shape (height, width) containing the binary next day's active fire mask.
             doy is a tensor of shape (n_leading_observations) containing the day of the year for each observation.
         """
-
         in_fire_index += self.skip_initial_samples
         end_index = (in_fire_index + self.n_leading_observations + 1)
 
@@ -321,9 +320,7 @@ class WildfireSpreadTSDataset(Dataset):
         Returns:
             _type_: _description_ Standardized input data, of shape (time_steps, features, height, width)
         """
-
         x = (x - self.means) / self.stds
-
         return x
 
     def preprocess_and_augment(self, x, y):
@@ -343,7 +340,6 @@ class WildfireSpreadTSDataset(Dataset):
         Returns:
             _type_: _description_
         """
-
         x, y = torch.Tensor(x), torch.Tensor(y)
 
         # Preprocessing that has been done in HDF files already
@@ -409,7 +405,6 @@ class WildfireSpreadTSDataset(Dataset):
         Returns:
             _type_: _description_
         """
-
         # Need square crop to prevent rotation from creating/destroying data at the borders, due to uneven side lengths.
         # Try several crops, prefer the ones with most fire pixels in output, followed by most fire_pixels in input
         best_n_fire_pixels = -1
@@ -618,7 +613,6 @@ class WildfireSpreadTSDataset(Dataset):
             that active fire detection times are converted to hours. lnglat contains longitude and latitude
             of the center of the image.
         """
-
         for year, fires_in_year in self.imgs_per_fire.items():
             for fire_name, img_files in fires_in_year.items():
                 imgs = []
