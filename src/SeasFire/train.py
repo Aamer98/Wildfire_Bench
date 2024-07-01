@@ -1,15 +1,15 @@
 import os
 import wandb
 
-from WildfireSpreadTS.utils import MyLightningCLI
-from SeasFire.module import SeasFireModule
+from SeasFire.utils import MyLightningCLI
+from models.climax.module import ClimaXModule
 from SeasFire.datamodule import SeasFireDataModule
 
 
 def main():
     # Initialize Lightning with the model and data modules, and instruct it to parse the config yml
     cli = MyLightningCLI(
-        model_class=SeasFireModule,
+        model_class=ClimaXModule,
         datamodule_class=SeasFireDataModule,
         seed_everything_default=42,
         save_config_overwrite=True,

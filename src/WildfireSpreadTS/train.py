@@ -2,14 +2,14 @@ import os
 import wandb
 
 from WildfireSpreadTS.utils import MyLightningCLI
-from WildfireSpreadTS.module import WildfireSpreadTSModule
+from models.climax.module import ClimaXModule
 from WildfireSpreadTS.datamodule import WildfireSpreadTSDataModule
 
 
 def main():
     # Initialize Lightning with the model and data modules, and instruct it to parse the config yml
     cli = MyLightningCLI(
-        model_class=WildfireSpreadTSModule,
+        model_class=ClimaXModule,
         datamodule_class=WildfireSpreadTSDataModule,        
         seed_everything_default=42,
         save_config_overwrite=True,
