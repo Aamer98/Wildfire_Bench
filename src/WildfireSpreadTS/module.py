@@ -9,7 +9,8 @@ import torch
 from pytorch_lightning import LightningModule
 from torchvision.transforms import transforms
 
-from Wildfire_Bench.src.models.arch import ClimaX
+from models.climax.arch import ClimaX
+from models.climax.pos_embed import interpolate_pos_embed
 from climax.utils.lr_scheduler import LinearWarmupCosineAnnealingLR
 from climax.utils.metrics import (
     binary_cross_entropy,
@@ -19,7 +20,6 @@ from climax.utils.metrics import (
     avg_precision,
     precision
 )
-from climax.utils.pos_embed import interpolate_pos_embed
 
 
 class WildfireSpreadTSModule(LightningModule):
