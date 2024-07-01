@@ -2,7 +2,7 @@ seed_everything: 42
 
 # ---------------------------- TRAINER -------------------------------------------
 trainer:
-  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/ClimaX/exps/seasfire}
+  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire}
 
   precision: 16
 
@@ -25,12 +25,8 @@ trainer:
   logger:
     class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
-      save_dir: ${trainer.default_root_dir}/logs
-      name: null
-      version: null
-      log_graph: False
-      default_hp_metric: True
-      prefix: ""
+      project: SeasFire_WFB
+      log_model: true
 
   callbacks:
     - class_path: pytorch_lightning.callbacks.LearningRateMonitor
@@ -75,7 +71,7 @@ model:
   pretrained_path: ""
 
   net:
-    class_path: climax.arch.ClimaX
+    class_path: models.climax.arch.ClimaX
     init_args:
       default_vars: [
           'lst_day',
