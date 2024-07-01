@@ -1,17 +1,13 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
-# credits: https://github.com/ashleve/lightning-hydra-template/blob/main/src/models/mnist_module.py
 from typing import Any
-
 import wandb
 import torch
 from pytorch_lightning import LightningModule
 from torchvision.transforms import transforms
 
-from climax.arch import ClimaX
-from climax.utils.lr_scheduler import LinearWarmupCosineAnnealingLR
-from climax.utils.metrics import (
+from models.climax.arch import ClimaX
+from models.climax.pos_embed import interpolate_pos_embed
+from models.climax.lr_scheduler import LinearWarmupCosineAnnealingLR
+from common_utils.metrics import (
     binary_cross_entropy,
     f1_score,
     iou,
@@ -19,7 +15,6 @@ from climax.utils.metrics import (
     avg_precision,
     precision
 )
-from climax.utils.pos_embed import interpolate_pos_embed
 
 
 class SeasFireModule(LightningModule):
@@ -37,7 +32,6 @@ class SeasFireModule(LightningModule):
         warmup_start_lr (float, optional): Starting learning rate for warmup.
         eta_min (float, optional): Minimum learning rate.
     """
-
     def __init__(
         self,
         net: ClimaX,
@@ -73,7 +67,8 @@ class SeasFireModule(LightningModule):
         if self.net.parallel_patch_embed:
             if "token_embeds.proj_weights" not in checkpoint_model.keys():
                 raise ValueError(
-                    "Pretrained checkpoint does not have token_embeds.proj_weights for parallel processing. Please convert the checkpoints first or disable parallel patch_embed tokenization."
+                    "Pretrained checkpoint does not have token_embeds.proj_weights for parallel processing. "/
+                    "Please convert the checkpoints first or disable parallel patch_embed tokenization."
                 )
 
         # checkpoint_keys = list(checkpoint_model.keys())
@@ -118,10 +113,6 @@ class SeasFireModule(LightningModule):
             for k in d.keys():
                 loss_dict[k] = d[k]
 
-        # wandb.log({"train_loss_epoch": loss_dict['loss'], "train_f1": loss_dict['f1'], 
-        #           "train_precision": loss_dict, "train_avg_precision": loss_dict['avg_precision'], 
-        #           "train_recall": loss_dict['recall'], "train_iou": loss_dict['iou']})
-
         for var in loss_dict.keys():
             self.log(
                 "train/" + var,
@@ -135,7 +126,6 @@ class SeasFireModule(LightningModule):
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
-        # print('val step')
         x, y, lead_times, variables, out_variables = batch
         
         if self.pred_range < 24:
@@ -169,14 +159,9 @@ class SeasFireModule(LightningModule):
                 sync_dist=True,
             )
         
-        # wandb.log({"val_loss": loss_dict['loss'], "val_f1": loss_dict['f1'], 
-        #            "val_precision": loss_dict, "val_avg_precision": loss_dict['avg_precision'], 
-        #            "val_recall": loss_dict['recall'], "val_iou": loss_dict['iou']})
-
         return loss_dict
 
     def test_step(self, batch: Any, batch_idx: int):
-        # print('test step')
         x, y, lead_times, variables, out_variables = batch
         
         if self.pred_range < 24:
@@ -209,40 +194,6 @@ class SeasFireModule(LightningModule):
                 prog_bar=False,
                 sync_dist=True,
             )
-
-        # self.log(
-        #     "test_loss",
-        #     loss_dict['loss'],
-        #     on_step=True,
-        #     on_epoch=True,
-        #     prog_bar=True,
-        #     logger=True,
-        #     sync_dist=True,
-        # )
-
-        # self.log(
-        #     "test_f1",
-        #     loss_dict['f1'],
-        #     on_step=True,
-        #     on_epoch=True,
-        #     prog_bar=True,
-        #     logger=True,
-        #     sync_dist=True,
-        # )
-
-        # self.log(
-        #     "test_precision",
-        #     loss_dict['precision'],
-        #     on_step=True,
-        #     on_epoch=True,
-        #     prog_bar=True,
-        #     logger=True,
-        #     sync_dist=True,
-        # )
-
-        # wandb.log({"test_loss": loss_dict['loss'], "test_f1": loss_dict['f1'], 
-        #            "test_precision": loss_dict['precision'], "test_avg_precision": loss_dict['avg_precision'], 
-        #            "test_recall": loss_dict['recall'], "test_iou": loss_dict['iou']})
 
         return loss_dict
 

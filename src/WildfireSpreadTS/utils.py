@@ -29,13 +29,13 @@ class MyLightningCLI(LightningCLI):
         """
         wandb.init(
             # Set the project where this run will be logged
-            project=f"ClimaX_WildfireSpreadTS_{cli.model.experiment}", 
+            project=f"ClimaX_WildfireSpreadTS_{self.model.experiment}", 
             # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
             # Track hyperparameters and run metadata
             config={
-            "learning_rate": cli.model.hparams.lr,
-            "seed": cli.config.seed_everything,
-            "batch_size": cli.datamodule.hparams.batch_size,
+            "learning_rate": self.model.hparams.lr,
+            "seed": self.config.seed_everything,
+            "batch_size": self.datamodule.hparams.batch_size,
         })
 
         config_file_name = os.path.join(wandb.run.dir, "cli_config.yaml")

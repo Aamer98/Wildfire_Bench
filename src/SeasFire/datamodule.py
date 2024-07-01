@@ -1,20 +1,13 @@
 from typing import Optional, Tuple
-
 import torch
+import torch.nn as nn
+from torch.nn import functional as F
+import pytorch_lightning as pl
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
-from torchvision.datasets import MNIST
-from torchvision.transforms import transforms
 import numpy as np
 import xarray as xr
-import xbatcher
-import json
 
-import torch
-from torch import nn
-from torch.nn import functional as F
-from torch.utils.data import DataLoader
-import pytorch_lightning as pl
 from SeasFire.dataset import sample_dataset, SeasFireDataset, collate_fn
 
 
@@ -40,7 +33,6 @@ class _RepeatSampler(object):
     Args:
         sampler (Sampler)
     """
-
     def __init__(self, sampler):
         self.sampler = sampler
 
@@ -65,37 +57,29 @@ class SeasFireDataModule(LightningDataModule):
     Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html
     """
-
     def __init__(
             self,
             root_dir,
             variables,
-            buffer_size,
-
             positional_vars: list = None,
             target: str = 'gwis_ba',
             target_shift: int = 1,
             task: str = 'classification',
             debug: bool = False,
-
             predict_range: int = 192,
             hrs_each_step: int = 1,
             batch_size: int = 64,
             num_workers: int = 0,
             pin_memory: bool = False
-
     ):
         super().__init__()
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
-        self.root_dir = root_dir
-        self.buffer_size = buffer_size
         self.variables = list(variables)
         self.target = target
         self.target_shift = target_shift
         self.ds = xr.open_zarr(root_dir, consolidated=True)
-        # TODO remove when we have the new datacube
         self.ds['sst'] = self.ds['sst'].where(self.ds['sst'] >= 0)
         self.mean_std_dict = None
         self.positional_vars = positional_vars
@@ -103,17 +87,16 @@ class SeasFireDataModule(LightningDataModule):
             self.num_timesteps = 5
         else:
             self.num_timesteps = -1
-        self.data_train: Optional[Dataset] = None
-        self.data_val: Optional[Dataset] = None
-        self.data_test: Optional[Dataset] = None
         self.task = task
-
         self.predict_range = predict_range
         self.hrs_each_step = hrs_each_step
         self.batch_size = batch_size
         self.num_workers = num_workers
         self.pin_memory = pin_memory
 
+        self.data_train: Optional[Dataset] = None
+        self.data_val: Optional[Dataset] = None
+        self.data_test: Optional[Dataset] = None
 
     def setup(self, stage: Optional[str] = None):
         """Load data. Set variables: `self.data_train`, `self.data_val`, `self.data_test`.
@@ -130,6 +113,7 @@ class SeasFireDataModule(LightningDataModule):
                                                                target=self.target,
                                                                target_shift=-self.target_shift, split='train',
                                                                num_timesteps=self.num_timesteps)
+            
             # Save mean std dict for normalization during inference time
             print(self.mean_std_dict)
             with open(f'mean_std_dict_{self.target_shift}.json', 'w') as f:
@@ -138,7 +122,6 @@ class SeasFireDataModule(LightningDataModule):
             val_batches, _ = sample_dataset(self.ds.copy(), input_vars=self.variables, target=self.target,
                                             target_shift=-self.target_shift, split='val',
                                             num_timesteps=self.num_timesteps)
-
             test_batches, _ = sample_dataset(self.ds.copy(), input_vars=self.variables, target=self.target,
                                              target_shift=-self.target_shift, split='test',
                                              num_timesteps=self.num_timesteps)

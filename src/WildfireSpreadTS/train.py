@@ -17,6 +17,7 @@ def main():
         auto_registry=True,
         parser_kwargs={"parser_mode": "omegaconf", "error_handler": None},
     )
+    cli.wandb_setup()
 
     # set lead time for prediction
     cli.model.set_pred_range(cli.datamodule.hparams.predict_range)

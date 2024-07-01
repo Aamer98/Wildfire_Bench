@@ -17,7 +17,7 @@ from common_utils.metrics import (
 )
 
 
-class WildfireSpreadTSModule(LightningModule):
+class ClimaXModule(LightningModule):
     """Lightning module for global forecasting with the ClimaX model.
 
     Args:
@@ -67,7 +67,7 @@ class WildfireSpreadTSModule(LightningModule):
         if self.net.parallel_patch_embed:
             if "token_embeds.proj_weights" not in checkpoint_model.keys():
                 raise ValueError(
-                    "Pretrained checkpoint does not have token_embeds.proj_weights for parallel processing. "/ 
+                    "Pretrained checkpoint does not have token_embeds.proj_weights for parallel processing. "/
                     "Please convert the checkpoints first or disable parallel patch_embed tokenization."
                 )
 
@@ -103,6 +103,7 @@ class WildfireSpreadTSModule(LightningModule):
 
     def training_step(self, batch: Any, batch_idx: int):
         x, y, lead_times, variables, out_variables = batch
+        
         all_loss_dicts, _ = self.net.forward(x, y, lead_times, variables, out_variables, 
                                             [binary_cross_entropy,f1_score,iou,recall,
                                             avg_precision,precision])
@@ -125,9 +126,8 @@ class WildfireSpreadTSModule(LightningModule):
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
-        breakpoint()
         x, y, lead_times, variables, out_variables = batch
-
+        
         if self.pred_range < 24:
             log_postfix = f"{self.pred_range}_hours"
         else:
@@ -158,12 +158,12 @@ class WildfireSpreadTSModule(LightningModule):
                 prog_bar=False,
                 sync_dist=True,
             )
-
+        
         return loss_dict
 
     def test_step(self, batch: Any, batch_idx: int):
         x, y, lead_times, variables, out_variables = batch
-
+        
         if self.pred_range < 24:
             log_postfix = f"{self.pred_range}_hours"
         else:

@@ -1,15 +1,13 @@
 import xbatcher
-import xarray as xr
 from tqdm import tqdm
 from torch.utils.data import Dataset
-from pathlib import Path
 import numpy as np
 import torch
 from torchvision import transforms
-import random
 
 
 def collate_fn(batch):
+    
     inp = torch.stack([batch[i][0] for i in range(len(batch))])
     out = torch.stack([batch[i][1] for i in range(len(batch))])
     lead_times = torch.cat([batch[i][2] for i in range(len(batch))])
@@ -19,7 +17,9 @@ def collate_fn(batch):
 
 
 def sample_dataset(ds, input_vars, target, target_shift, split='train', dim_lon=128, dim_lat=128, dim_time=2, num_timesteps=-1):
+    
     print(f'Shifting inputs by {-target_shift}')
+    
     for var in input_vars:
         if target_shift < 0:
             ds[var] = ds[var].shift(time=-target_shift)
@@ -35,12 +35,15 @@ def sample_dataset(ds, input_vars, target, target_shift, split='train', dim_lon=
         ds = ds.isel(time=slice(0, num_timesteps - 1))
     ds = ds[input_vars + [target]]
     ds = ds.load()
+    
     print("Dataset loaded")
+    
     bgen = xbatcher.BatchGenerator(
         ds=ds,
         input_dims={'longitude': dim_lon, 'latitude': dim_lat, 'time': dim_time},
         input_overlap={'time': dim_time - 1} if (dim_time - 1) else {}
     )
+    
     # compute positional embedding from longitude and latitude
     lon = ds.longitude.values
     lat = ds.latitude.values
@@ -53,33 +56,30 @@ def sample_dataset(ds, input_vars, target, target_shift, split='train', dim_lon=
     ds['cos_lat'] = ({'latitude': ds.latitude, 'longitude': ds.longitude}, np.cos(lat * np.pi / 180))
     ds['sin_lon'] = ({'latitude': ds.latitude, 'longitude': ds.longitude}, np.sin(lon * np.pi / 180))
     ds['sin_lat'] = ({'latitude': ds.latitude, 'longitude': ds.longitude}, np.sin(lat * np.pi / 180))
-    # if log_tp:
     ds['tp'] = np.log(ds['tp'] + 1)
     ds[target] = np.log(ds[target] + 1)
 
-
     # calclulate sum of gwis_ba in a rolling window of 1 month
-
-
     n_batches = 0
     n_pos = 0
     positives = []
     negatives = []
     batches = []
     mean_std_dict = {}
+    
     for var in input_vars + [target]:
         mean_std_dict[var + '_mean'] = ds[var].mean().values.item(0)
         mean_std_dict[var + '_std'] = ds[var].std().values.item(0)
+    
     for batch in tqdm(bgen):
         if batch.isel(time=-1)[target].sum() > 0:
             positives.append(batch)
             n_pos += 1
-        #         else:
-        #             if not np.isnan(batch.isel(time=-1)['NDVI']).sum()>0:
-        #                 negatives.append(batch)
         n_batches += 1
+    
     print('# of batches', n_batches)
     print('# of positives', n_pos)
+    
     return positives, mean_std_dict
 
 
