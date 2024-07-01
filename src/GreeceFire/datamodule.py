@@ -2,9 +2,7 @@ from typing import Optional, Tuple
 
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
-from datamodules.datasets.greecefire_dataset import FireDataset_npy
-
-from climax.pretrain.datamodule import collate_fn
+from GreeceFire.dataset import GreeceFireDataset, collate_fn
 
 
 class GreeceFireDataModule(LightningDataModule):
@@ -75,7 +73,7 @@ class GreeceFireDataModule(LightningDataModule):
         if not root_dir:
             raise ValueError('dataset_root variable must be set. Check README')
 
-        self.data_train = FireDataset_npy(dataset_root=root_dir, access_mode=self.access_mode,
+        self.data_train = GreeceFireDataset(dataset_root=root_dir, access_mode=self.access_mode,
                                           problem_class=self.problem_class,
                                           train_val_test='train',
                                           dynamic_features=self.sel_dynamic_features,
@@ -83,7 +81,7 @@ class GreeceFireDataModule(LightningDataModule):
                                           categorical_features=None, nan_fill=self.nan_fill, clc=clc,
                                           variables=self.variables, out_variables=self.out_variables, 
                                           lead_time=self.predict_range)
-        self.data_val = FireDataset_npy(dataset_root=root_dir, access_mode=self.access_mode,
+        self.data_val = GreeceFireDataset(dataset_root=root_dir, access_mode=self.access_mode,
                                         problem_class=self.problem_class,
                                         train_val_test='val',
                                         dynamic_features=self.sel_dynamic_features,
@@ -91,7 +89,7 @@ class GreeceFireDataModule(LightningDataModule):
                                         categorical_features=None, nan_fill=self.nan_fill, clc=clc,
                                         variables=self.variables, out_variables=self.out_variables, 
                                         lead_time=self.predict_range)
-        self.data_test = FireDataset_npy(dataset_root=root_dir, access_mode=self.access_mode,
+        self.data_test = GreeceFireDataset(dataset_root=root_dir, access_mode=self.access_mode,
                                          problem_class=self.problem_class,
                                          train_val_test='test',
                                          dynamic_features=self.sel_dynamic_features,

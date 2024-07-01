@@ -15,9 +15,7 @@ from torch import nn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
 import pytorch_lightning as pl
-from .components.seasfire_dataset import sample_dataset, BatcherDS
-
-from climax.pretrain.datamodule import collate_fn
+from SeasFire.dataset import sample_dataset, SeasFireDataset, collate_fn
 
 
 class MultiEpochsDataLoader(torch.utils.data.DataLoader):
@@ -145,13 +143,13 @@ class SeasFireDataModule(LightningDataModule):
                                              target_shift=-self.target_shift, split='test',
                                              num_timesteps=self.num_timesteps)
 
-            self.data_train = BatcherDS(train_batches, input_vars=self.variables, positional_vars=self.positional_vars,
+            self.data_train = SeasFireDataset(train_batches, input_vars=self.variables, positional_vars=self.positional_vars,
                                         target=self.target, lead_time=self.predict_range,
                                         mean_std_dict=self.mean_std_dict, task=self.task)
-            self.data_val = BatcherDS(val_batches, input_vars=self.variables, positional_vars=self.positional_vars,
+            self.data_val = SeasFireDataset(val_batches, input_vars=self.variables, positional_vars=self.positional_vars,
                                       target=self.target, lead_time=self.predict_range,
                                       mean_std_dict=self.mean_std_dict, task=self.task)
-            self.data_test = BatcherDS(test_batches, input_vars=self.variables, positional_vars=self.positional_vars,
+            self.data_test = SeasFireDataset(test_batches, input_vars=self.variables, positional_vars=self.positional_vars,
                                        target=self.target, lead_time=self.predict_range,
                                        mean_std_dict=self.mean_std_dict, task=self.task)
 

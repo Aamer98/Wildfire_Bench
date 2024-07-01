@@ -5,23 +5,23 @@ import os
 import wandb
 from pytorch_lightning.cli import LightningCLI
 
-from modules.SeasFire import SeasFireModule
-from modules.GreeceFire import SeasFireModule
-from modules.WildFireSpreadTS import WildFireSpreadTSModule
-from datamodules.SeasFire import SeasFireDataModule
-from datamodules.GreeceFire import GreeceFireDataModule
-from datamodules.WildFireSpreadTS import WildFireSpreadTSDataModule
+from GreeceFire.module import GreeceFireModule
+from GreeceFire.datamodule import GreeceFireDataModule
 
-breakpoint()
+
 def main():
+    breakpoint()
     # Initialize Lightning with the model and data modules, and instruct it to parse the config yml
     cli = LightningCLI(
+        model_class=GreeceFireModule,
+        datamodule_class=GreeceFireDataModule,
         seed_everything_default=42,
         save_config_overwrite=True,
         run=False,
         auto_registry=True,
         parser_kwargs={"parser_mode": "omegaconf", "error_handler": None},
     )
+    breakpoint()
     os.makedirs(cli.trainer.default_root_dir, exist_ok=True)
     wandb_setup(cli)
 

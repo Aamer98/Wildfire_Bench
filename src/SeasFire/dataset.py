@@ -9,6 +9,15 @@ from torchvision import transforms
 import random
 
 
+def collate_fn(batch):
+    inp = torch.stack([batch[i][0] for i in range(len(batch))])
+    out = torch.stack([batch[i][1] for i in range(len(batch))])
+    lead_times = torch.cat([batch[i][2] for i in range(len(batch))])
+    variables = batch[0][3]
+    out_variables = batch[0][4]
+    return inp, out, lead_times, variables, out_variables
+
+
 def sample_dataset(ds, input_vars, target, target_shift, split='train', dim_lon=128, dim_lat=128, dim_time=2, num_timesteps=-1):
     print(f'Shifting inputs by {-target_shift}')
     for var in input_vars:

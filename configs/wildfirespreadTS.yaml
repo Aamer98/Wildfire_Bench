@@ -2,7 +2,7 @@ seed_everything: 42
 
 # ---------------------------- TRAINER -------------------------------------------
 trainer:
-  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/ClimaX/exps/wildfirespreadTS}
+  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/WildfireSpreadTS}
 
   precision: 16
 
@@ -25,12 +25,8 @@ trainer:
   logger:
     class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
-      save_dir: ${trainer.default_root_dir}/logs
-      name: null
-      version: null
-      log_graph: False
-      default_hp_metric: True
-      prefix: ""
+      project: WildfireSpreadTS_WFB
+      log_model: true
 
   callbacks:
     - class_path: pytorch_lightning.callbacks.LearningRateMonitor
@@ -178,7 +174,7 @@ data:
   predict_range: 24
   hrs_each_step: 1 # play around with this later, unsure if its supposed to be 24 since dataset resolution is 24
   buffer_size: 10000
-  batch_size: 128
+  batch_size: 2
   num_workers: 1
   pin_memory: False
 

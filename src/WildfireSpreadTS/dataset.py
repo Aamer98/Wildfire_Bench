@@ -14,7 +14,16 @@ import h5py
 from datetime import datetime
 
 
-class WildfireSpreadTSDtaset(Dataset):
+def collate_fn(batch):
+    inp = torch.stack([batch[i][0] for i in range(len(batch))])
+    out = torch.stack([batch[i][1] for i in range(len(batch))])
+    lead_times = batch[0][2]
+    variables = batch[0][3]
+    out_variables = batch[0][4]
+    return inp, out, lead_times, variables, out_variables
+
+
+class WildfireSpreadTSDataset(Dataset):
     def __init__(self, data_dir: str, included_fire_years: List[int], n_leading_observations: int,
                  crop_side_length: int, load_from_hdf5: bool, is_train: bool, remove_duplicate_features: bool,
                  variables: List[str], out_variables: List[str], stats_years: List[int], 
@@ -204,10 +213,7 @@ class WildfireSpreadTSDtaset(Dataset):
         variables = self.variables
         out_variables = self.out_variables
 
-        print(x.shape)
-        print(y.shape)
-
-        return x.squeeze(), y, lead_time, variables, out_variables
+        return x.squeeze(), y, torch.Tensor([self.lead_time]).squeeze(), variables, out_variables
 
     def __len__(self):
         return self.length

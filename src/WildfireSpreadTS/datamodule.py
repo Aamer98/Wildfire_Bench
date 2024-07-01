@@ -19,8 +19,9 @@ from climax.pretrain.dataset import (
     ShuffleIterableDataset,
 )
 
-from FireSpreadDataset import FireSpreadDataset
+from dataset import WildfireSpreadTSDataset , collate_fn
 from typing import List, Optional, Union
+
 
 
 class WildfireSpreadTSDataModule(LightningDataModule):
@@ -89,18 +90,7 @@ class WildfireSpreadTSDataModule(LightningDataModule):
             out_variables = [out_variables]
             self.hparams.out_variables = out_variables
 
-        # self.lister_train = list(dp.iter.FileLister(os.path.join(root_dir, "train")))
-        # self.lister_val = list(dp.iter.FileLister(os.path.join(root_dir, "val")))
-        # self.lister_test = list(dp.iter.FileLister(os.path.join(root_dir, "test")))
-
         self.root_dir = root_dir
-        
-        ## WildfirespreadTS is normalized in the dataset class
-        # self.transforms = self.get_normalize()
-        # self.output_transforms = self.get_normalize(out_variables)
-
-        # self.val_clim = self.get_climatology("val", out_variables)
-        # self.test_clim = self.get_climatology("test", out_variables)
 
         self.data_train: Optional[IterableDataset] = None
         self.data_val: Optional[IterableDataset] = None
@@ -155,7 +145,7 @@ class WildfireSpreadTSDataModule(LightningDataModule):
             self.data_fold_id)
 
         if not self.data_train and not self.data_val and not self.data_test:
-            self.data_train = FireSpreadDataset(data_dir=self.root_dir, included_fire_years=train_years,
+            self.data_train = WildfireSpreadTSDataset(data_dir=self.root_dir, included_fire_years=train_years,
                                                n_leading_observations=self.n_leading_observations,
                                                n_leading_observations_test_adjustment=None,
                                                crop_side_length=self.crop_side_length,
@@ -165,7 +155,7 @@ class WildfireSpreadTSDataModule(LightningDataModule):
                                                stats_years=train_years, variables=self.variables, out_variables=self.out_variables,
                                                lead_time=torch.Tensor([self.predict_range]).squeeze())
 
-            self.data_val = FireSpreadDataset(data_dir=self.root_dir, included_fire_years=val_years,
+            self.data_val = WildfireSpreadTSDataset(data_dir=self.root_dir, included_fire_years=val_years,
                                              n_leading_observations=self.n_leading_observations,
                                              n_leading_observations_test_adjustment=None,
                                              crop_side_length=self.crop_side_length,
@@ -175,7 +165,7 @@ class WildfireSpreadTSDataModule(LightningDataModule):
                                              stats_years=train_years, variables=self.variables, out_variables=self.out_variables,
                                              lead_time=torch.Tensor([self.predict_range]).squeeze())
 
-            self.data_test = FireSpreadDataset(data_dir=self.root_dir, included_fire_years=test_years,
+            self.data_test = WildfireSpreadTSDataset(data_dir=self.root_dir, included_fire_years=test_years,
                                               n_leading_observations=self.n_leading_observations,
                                               n_leading_observations_test_adjustment=self.n_leading_observations_test_adjustment,
                                               crop_side_length=self.crop_side_length,

@@ -9,7 +9,7 @@ import torch
 from pytorch_lightning import LightningModule
 from torchvision.transforms import transforms
 
-from climax.arch import ClimaX
+from Wildfire_Bench.src.models.arch import ClimaX
 from climax.utils.lr_scheduler import LinearWarmupCosineAnnealingLR
 from climax.utils.metrics import (
     binary_cross_entropy,
@@ -22,7 +22,7 @@ from climax.utils.metrics import (
 from climax.utils.pos_embed import interpolate_pos_embed
 
 
-class WildFireSpreadTSModule(LightningModule):
+class WildfireSpreadTSModule(LightningModule):
     """Lightning module for global forecasting with the ClimaX model.
 
     Args:
@@ -135,9 +135,10 @@ class WildFireSpreadTSModule(LightningModule):
 
     def validation_step(self, batch: Any, batch_idx: int):
         # print('val step')
-        breakpoint()
+        # breakpoint()
         x, y, lead_times, variables, out_variables = batch
 
+        breakpoint()
         if self.pred_range < 24:
             log_postfix = f"{self.pred_range}_hours"
         else:
