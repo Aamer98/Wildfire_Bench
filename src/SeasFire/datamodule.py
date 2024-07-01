@@ -7,8 +7,10 @@ from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 import numpy as np
 import xarray as xr
+import json
 
-from SeasFire.dataset import sample_dataset, SeasFireDataset, collate_fn
+from SeasFire.dataset import sample_dataset, SeasFireDataset
+from common_utils.data_utils import collate_fn
 
 
 class MultiEpochsDataLoader(torch.utils.data.DataLoader):

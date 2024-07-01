@@ -7,7 +7,8 @@ from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, IterableDataset
 from torchvision.transforms import transforms
 
-from WildfireSpreadTS.dataset import WildfireSpreadTSDataset , collate_fn
+from WildfireSpreadTS.dataset import WildfireSpreadTSDataset
+from common_utils.data_utils import collate_fn
 
 
 class WildfireSpreadTSDataModule(LightningDataModule):

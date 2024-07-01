@@ -14,15 +14,6 @@ import torchvision.transforms.functional as TF
 from WildfireSpreadTS.utils import get_means_stds_missing_values, get_indices_of_degree_features
 
 
-def collate_fn(batch):
-    inp = torch.stack([batch[i][0] for i in range(len(batch))])
-    out = torch.stack([batch[i][1] for i in range(len(batch))])
-    lead_times = batch[0][2]
-    variables = batch[0][3]
-    out_variables = batch[0][4]
-    return inp, out, lead_times, variables, out_variables
-
-
 class WildfireSpreadTSDataset(Dataset):
     def __init__(self, data_dir: str, included_fire_years: List[int], n_leading_observations: int,
                  crop_side_length: int, load_from_hdf5: bool, is_train: bool, remove_duplicate_features: bool,
