@@ -16,7 +16,6 @@ class WildfireSpreadTSDataModule(LightningDataModule):
     Args:
         root_dir (str): Root directory for sharded data.
         variables (list): List of input variables.
-        buffer_size (int): Buffer size for shuffling.
         out_variables (list, optional): List of output variables.
         predict_range (int, optional): Predict range.
         hrs_each_step (int, optional): Hours each step.
@@ -44,7 +43,6 @@ class WildfireSpreadTSDataModule(LightningDataModule):
         self,
         root_dir,
         variables,
-        buffer_size,
         n_leading_observations: int,
         n_leading_observations_test_adjustment: int,
         crop_side_length: int,

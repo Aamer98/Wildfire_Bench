@@ -174,7 +174,6 @@ data:
   out_variables: ["active fire binary"]
   predict_range: 24
   hrs_each_step: 1 # play around with this later, unsure if its supposed to be 24 since dataset resolution is 24
-  buffer_size: 10000
   batch_size: 2
   num_workers: 1
   pin_memory: False

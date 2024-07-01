@@ -1,3 +1,4 @@
+import os
 import wandb
 from pytorch_lightning.cli import LightningCLI
 from pytorch_lightning.utilities import rank_zero_only
