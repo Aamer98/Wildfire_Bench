@@ -1,17 +1,16 @@
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
-
-import rasterio
-from torch.utils.data import Dataset
-import torch
-import numpy as np
-from torch.utils.data.dataset import T_co
 import glob
 import warnings
-from utils import get_means_stds_missing_values, get_indices_of_degree_features
-import torchvision.transforms.functional as TF
 import h5py
-from datetime import datetime
+import rasterio
+import numpy as np
+import torch
+from torch.utils.data import Dataset
+from torch.utils.data.dataset import T_co
+import torchvision.transforms.functional as TF
+from WildfireSpreadTS.utils import get_means_stds_missing_values, get_indices_of_degree_features
 
 
 def collate_fn(batch):
@@ -563,7 +562,6 @@ class WildfireSpreadTSDataset(Dataset):
         n_features = (int(deduplicate_static_features)*n_dynamic_features)*(n_observations-1) + n_all_features
 
         return n_features
-
 
     @staticmethod
     def img_dates_to_doys(img_dates):

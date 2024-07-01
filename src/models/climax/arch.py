@@ -1,21 +1,14 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 from functools import lru_cache
-
 import numpy as np
 import torch
 import torch.nn as nn
 from timm.models.vision_transformer import Block, PatchEmbed, trunc_normal_
 
-
 from models.climax.pos_embed import (
     get_1d_sincos_pos_embed_from_grid,
     get_2d_sincos_pos_embed,
 )
-
 from models.climax.parallelpatchembed import ParallelVarPatchEmbed
-
 from common_utils.metrics import mse, lat_weighted_mse, binary_cross_entropy
 
 

@@ -1,6 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -9,26 +6,21 @@ import torchmetrics
 from scipy import stats
 
 
-# self.conf_mat = torchmetrics.ConfusionMatrix("binary")
-
 def iou(pred, y, vars):
     """IoU
-
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-
     iou = torchmetrics.JaccardIndex("binary")
     pred = torch.round(torch.sigmoid(pred))
     loss = iou(pred.squeeze(1).cpu(), y.cpu())
 
     loss_dict = {}
-
     with torch.no_grad():
         loss_dict[f"iou_{vars[0]}"] = loss.mean()
-
+    
     loss_dict["iou"] = loss.mean()
 
     return loss_dict
@@ -36,22 +28,19 @@ def iou(pred, y, vars):
 
 def recall(pred, y, vars):
     """Recall
-
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-
     rec = torchmetrics.Recall("binary")
     pred = torch.round(torch.sigmoid(pred))
     loss = rec(pred.squeeze(1).cpu(), y.cpu())
 
     loss_dict = {}
-
     with torch.no_grad():
         loss_dict[f"recall_{vars[0]}"] = loss.mean()
-
+    
     loss_dict["recall"] = loss.mean()
 
     return loss_dict
@@ -59,22 +48,19 @@ def recall(pred, y, vars):
 
 def avg_precision(pred, y, vars):
     """Average precision
-    
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-
     prec = torchmetrics.AveragePrecision("binary")
     pred = torch.round(torch.sigmoid(pred))
     loss = prec(pred.squeeze(1).cpu(), y.cpu())
 
     loss_dict = {}
-
     with torch.no_grad():
         loss_dict[f"avg_precision_{vars[0]}"] = loss.mean()
-
+    
     loss_dict["avg_precision"] = loss.mean()
 
     return loss_dict
@@ -82,45 +68,39 @@ def avg_precision(pred, y, vars):
 
 def precision(pred, y, vars):
     """Precision
-    
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-
     prec = torchmetrics.Precision("binary")
     pred = torch.round(torch.sigmoid(pred))
     loss = prec(pred.squeeze(1).cpu(), y.cpu())
 
     loss_dict = {}
-
     with torch.no_grad():
         loss_dict[f"precision_{vars[0]}"] = loss.mean()
-
+    
     loss_dict["precision"] = loss.mean()
-
+    
     return loss_dict
 
 
 def f1_score(pred, y, vars):
     """F1 score
-
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-    
     f1 = torchmetrics.F1Score("binary")
     pred = torch.round(torch.sigmoid(pred))
     loss = f1(pred.squeeze(1).cpu(), y.cpu())
 
     loss_dict = {}
-
     with torch.no_grad():
         loss_dict[f"f1_{vars[0]}"] = loss.mean()
-
+    
     loss_dict["f1"] = loss.mean()
 
     return loss_dict
@@ -128,24 +108,18 @@ def f1_score(pred, y, vars):
 
 def binary_cross_entropy(pred, y, vars):
     """Mean squared error
-
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-    
-    # breakpoint()
-
     bce = binary_cross_entropy_with_logits
-    # logits = torch.sigmoid(pred.squeeze(1))
-
     loss = bce(pred ,y.float())
 
     loss_dict = {}
     with torch.no_grad():
         loss_dict[vars[0]] = loss.mean()
-
+    
     loss_dict["loss"] = loss.mean()
 
     return loss_dict
@@ -153,17 +127,14 @@ def binary_cross_entropy(pred, y, vars):
 
 def mse(pred, y, vars, lat=None, mask=None):
     """Mean squared error
-
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-
     loss = (pred - y) ** 2
 
     loss_dict = {}
-
     with torch.no_grad():
         for i, var in enumerate(vars):
             if mask is not None:
@@ -181,16 +152,13 @@ def mse(pred, y, vars, lat=None, mask=None):
 
 def lat_weighted_mse(pred, y, vars, lat, mask=None):
     """Latitude weighted mean squared error
-
     Allows to weight the loss by the cosine of the latitude to account for gridding differences at equator vs. poles.
-
     Args:
         y: [B, V, H, W]
         pred: [B, V, H, W]
         vars: list of variable names
         lat: H
     """
-
     error = (pred - y) ** 2  # [N, C, H, W]
 
     # lattitude weights
@@ -222,7 +190,6 @@ def lat_weighted_mse_val(pred, y, transform, vars, lat, clim, log_postfix):
         vars: list of variable names
         lat: H
     """
-
     error = (pred - y) ** 2  # [B, V, H, W]
 
     # lattitude weights
@@ -242,17 +209,14 @@ def lat_weighted_mse_val(pred, y, transform, vars, lat, clim, log_postfix):
 
 def lat_weighted_rmse(pred, y, transform, vars, lat, clim, log_postfix):
     """Latitude weighted root mean squared error
-
     Args:
         y: [B, V, H, W]
         pred: [B, V, H, W]
         vars: list of variable names
         lat: H
     """
-
     pred = transform(pred)
     y = transform(y)
-
     error = (pred - y) ** 2  # [B, V, H, W]
 
     # lattitude weights
@@ -266,7 +230,7 @@ def lat_weighted_rmse(pred, y, transform, vars, lat, clim, log_postfix):
             loss_dict[f"w_rmse_{var}_{log_postfix}"] = torch.mean(
                 torch.sqrt(torch.mean(error[:, i] * w_lat, dim=(-2, -1)))
             )
-
+    
     loss_dict["w_rmse"] = np.mean([loss_dict[k].cpu() for k in loss_dict.keys()])
 
     return loss_dict
@@ -279,7 +243,6 @@ def lat_weighted_acc(pred, y, transform, vars, lat, clim, log_postfix):
     vars: list of variable names
     lat: H
     """
-
     pred = transform(pred)
     y = transform(y)
 
@@ -301,7 +264,7 @@ def lat_weighted_acc(pred, y, transform, vars, lat, clim, log_postfix):
             loss_dict[f"acc_{var}_{log_postfix}"] = torch.sum(w_lat * pred_prime * y_prime) / torch.sqrt(
                 torch.sum(w_lat * pred_prime**2) * torch.sum(w_lat * y_prime**2)
             )
-
+    
     loss_dict["acc"] = np.mean([loss_dict[k].cpu() for k in loss_dict.keys()])
 
     return loss_dict
@@ -314,7 +277,6 @@ def lat_weighted_nrmses(pred, y, transform, vars, lat, clim, log_postfix):
     vars: list of variable names
     lat: H
     """
-
     pred = transform(pred)
     y = transform(y)
     y_normalization = clim
@@ -343,7 +305,6 @@ def lat_weighted_nrmseg(pred, y, transform, vars, lat, clim, log_postfix):
     vars: list of variable names
     lat: H
     """
-
     pred = transform(pred)
     y = transform(y)
     y_normalization = clim
@@ -373,14 +334,15 @@ def lat_weighted_nrmse(pred, y, transform, vars, lat, clim, log_postfix):
     vars: list of variable names
     lat: H
     """
-
     nrmses = lat_weighted_nrmses(pred, y, transform, vars, lat, clim, log_postfix)
     nrmseg = lat_weighted_nrmseg(pred, y, transform, vars, lat, clim, log_postfix)
+    
     loss_dict = {}
     for var in vars:
         loss_dict[f"w_nrmses_{var}"] = nrmses[f"w_nrmses_{var}"]
         loss_dict[f"w_nrmseg_{var}"] = nrmseg[f"w_nrmseg_{var}"]
         loss_dict[f"w_nrmse_{var}"] = nrmses[f"w_nrmses_{var}"] + 5 * nrmseg[f"w_nrmseg_{var}"]
+    
     return loss_dict
 
 
@@ -404,7 +366,6 @@ def pearson(pred, y, transform, vars, lat, log_steps, log_days, clim):
     vars: list of variable names
     lat: H
     """
-
     pred = transform(pred)
     y = transform(y)
 
@@ -428,7 +389,6 @@ def lat_weighted_mean_bias(pred, y, transform, vars, lat, log_steps, log_days, c
     vars: list of variable names
     lat: H
     """
-
     pred = transform(pred)
     y = transform(y)
 

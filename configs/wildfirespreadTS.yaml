@@ -68,7 +68,7 @@ model:
   warmup_start_lr: 1e-8
   eta_min: 1e-8
   experiment: "test"
-  pretrained_path: ""
+  pretrained_path: "/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/1.40625deg.ckpt"
 
   net:
     class_path: models.climax.arch.ClimaX

@@ -1,12 +1,9 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 import os
 import wandb
 from pytorch_lightning.cli import LightningCLI
 
-from module import WildfireSpreadTSModule
-from datamodule import WildfireSpreadTSDataModule
+from WildfireSpreadTS.module import WildfireSpreadTSModule
+from WildfireSpreadTS.datamodule import WildfireSpreadTSDataModule
 
 
 def main():

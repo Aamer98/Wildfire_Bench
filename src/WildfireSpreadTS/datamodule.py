@@ -1,9 +1,5 @@
-# Copyright (c) Microsoft Corporation.
-# Licensed under the MIT license.
-
 import os
-from typing import Optional
-
+from typing import Optional, List, Union
 import numpy as np
 import torch
 import torchdata.datapipes as dp
@@ -11,17 +7,7 @@ from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, IterableDataset
 from torchvision.transforms import transforms
 
-from climax.pretrain.datamodule import collate_fn
-from climax.pretrain.dataset import (
-    Forecast,
-    IndividualForecastDataIter,
-    NpyReader,
-    ShuffleIterableDataset,
-)
-
-from dataset import WildfireSpreadTSDataset , collate_fn
-from typing import List, Optional, Union
-
+from WildfireSpreadTS.dataset import WildfireSpreadTSDataset , collate_fn
 
 
 class WildfireSpreadTSDataModule(LightningDataModule):
