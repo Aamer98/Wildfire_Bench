@@ -137,7 +137,7 @@ trainer:
   inference_mode: true
 model:
   net:
-    class_path: climax.arch.ClimaX
+    class_path: models.climax.arch.ClimaX
     init_args:
       default_vars:
       - VIIRS band M11

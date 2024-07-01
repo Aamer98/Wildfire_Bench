@@ -8,14 +8,15 @@ import torch
 import torch.nn as nn
 from timm.models.vision_transformer import Block, PatchEmbed, trunc_normal_
 
-from climax.utils.pos_embed import (
+
+from models.climax.pos_embed import (
     get_1d_sincos_pos_embed_from_grid,
     get_2d_sincos_pos_embed,
 )
 
-from .parallelpatchembed import ParallelVarPatchEmbed
+from models.climax.parallelpatchembed import ParallelVarPatchEmbed
 
-from climax.utils.metrics import mse, lat_weighted_mse, binary_cross_entropy
+from common_utils.metrics import mse, lat_weighted_mse, binary_cross_entropy
 
 
 class ClimaX(nn.Module):
