@@ -55,7 +55,7 @@ class ClimaX(nn.Module):
     ):
         super().__init__()
 
-        self.output_size = 1
+        self.output_size = output_size
         # TODO: remove time_history parameter
         self.img_size = img_size
         self.patch_size = patch_size
@@ -231,9 +231,10 @@ class ClimaX(nn.Module):
         # add pos embedding
         x = x + self.pos_embed
 
+        
         # add lead time embedding
         lead_time_emb = self.lead_time_embed(lead_times.unsqueeze(-1))  # B, D
-        lead_time_emb = lead_time_emb.unsqueeze(1)
+        lead_time_emb = lead_time_emb
         x = x + lead_time_emb  # B, L, D
 
         x = self.pos_drop(x)
@@ -269,24 +270,20 @@ class ClimaX(nn.Module):
             preds = preds[:,:,:self.output_size,:self.output_size]
             preds = preds.squeeze()
 
-        # breakpoint()
         if metric is None:
             loss = None
         elif metric[0] == mse or metric[0] == binary_cross_entropy:
-            loss = [m(preds, y, out_variables) for m in metric]
+            loss = [m(preds.squeeze(), y.squeeze(), out_variables) for m in metric]
         else:
-            loss = [m(preds, y, out_variables, lat) for m in metric]
+            loss = [m(preds.squeeze(), y.squeeze(), out_variables, lat) for m in metric]
 
         return loss, preds
 
-    # def evaluate(self, x, y, lead_times, variables, out_variables, transform, metrics, lat, clim, log_postfix):
-    #     _, preds = self.forward(x, y, lead_times, variables, out_variables, metric=None, lat=lat)
-    #     return [m(preds, y, transform, out_variables, lat, clim, log_postfix) for m in metrics]
 
     def evaluate(self, x, y, lead_times, variables, out_variables, metrics, transform=None, lat=None, clim=None, log_postfix=None):
         _, preds = self.forward(x, y, lead_times, variables, out_variables, metric=None, lat=lat)
-        # breakpoint()
+        
         if metrics[0] == mse or metrics[0] == binary_cross_entropy:
-            return [m(preds, y, out_variables) for m in metrics]
+            return [m(preds.squeeze(), y.squeeze(), out_variables) for m in metrics]
         else:
-            return [m(preds, y, transform, out_variables, lat, clim, log_postfix) for m in metrics]
+            return [m(preds.squeeze(), y.squeeze(), transform, out_variables, lat, clim, log_postfix) for m in metrics]

@@ -116,6 +116,7 @@ model:
       'Landcover_Type1 onehot_16'
     ]
       img_size: [128, 128]
+      output_size: [128, 128]
       patch_size: 2
       embed_dim: 1024
       depth: 8

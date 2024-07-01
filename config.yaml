@@ -183,7 +183,9 @@ model:
       img_size:
       - 128
       - 128
-      output_size: null
+      output_size:
+      - 128
+      - 128
       patch_size: 2
       output_patch_size: 1
       embed_dim: 1024
