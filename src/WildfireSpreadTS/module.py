@@ -11,8 +11,8 @@ from torchvision.transforms import transforms
 
 from models.climax.arch import ClimaX
 from models.climax.pos_embed import interpolate_pos_embed
-from climax.utils.lr_scheduler import LinearWarmupCosineAnnealingLR
-from climax.utils.metrics import (
+from models.climax.lr_scheduler import LinearWarmupCosineAnnealingLR
+from utils.metrics import (
     binary_cross_entropy,
     f1_score,
     iou,
