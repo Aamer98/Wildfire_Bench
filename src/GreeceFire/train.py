@@ -8,7 +8,7 @@ from GreeceFire.datamodule import GreeceFireDataModule
 
 def main():
     # Initialize Lightning with the model and data modules, and instruct it to parse the config yml
-    cli = LightningCLI(
+    cli = MyLightningCLI(
         model_class=ClimaXModule,
         datamodule_class=GreeceFireDataModule,
         seed_everything_default=42,
@@ -17,10 +17,9 @@ def main():
         auto_registry=True,
         parser_kwargs={"parser_mode": "omegaconf", "error_handler": None},
     )
-    
-    os.makedirs(cli.trainer.default_root_dir, exist_ok=True)
-    wandb_setup(cli)
+    cli.wandb_setup()
 
+    # set lead time for prediction
     cli.model.set_pred_range(cli.datamodule.hparams.predict_range)
 
     # fit() runs the training
