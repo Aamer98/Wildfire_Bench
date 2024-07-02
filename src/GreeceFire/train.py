@@ -2,7 +2,7 @@ import os
 import wandb
 
 from GreeceFire.utils import MyLightningCLI
-from models.climax.module import ClimaXModule
+from GreeceFire.module import ClimaXModule
 from GreeceFire.datamodule import GreeceFireDataModule
 
 
@@ -20,7 +20,7 @@ def main():
     cli.wandb_setup()
 
     # set lead time for prediction
-    cli.model.set_pred_range(cli.datamodule.hparams.predict_range)
+    cli.model.set_pred_range(cli.datamodule.predict_range)
 
     # fit() runs the training
     cli.trainer.fit(cli.model, datamodule=cli.datamodule)

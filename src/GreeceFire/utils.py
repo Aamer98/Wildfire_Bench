@@ -24,6 +24,7 @@ class MyLightningCLI(LightningCLI):
         Also define min and max metrics in wandb, because otherwise it just reports the 
         last known values, which is not what we want.
         """
+        # breakpoint()
         wandb.init(
             # Set the project where this run will be logged
             project=f"ClimaX_GreeceFire_{self.model.experiment}", 
@@ -32,7 +33,7 @@ class MyLightningCLI(LightningCLI):
             config={
             "learning_rate": self.model.hparams.lr,
             "seed": self.config.seed_everything,
-            "batch_size": self.datamodule.hparams.batch_size,
+            "batch_size": self.datamodule.batch_size,
         })
 
         config_file_name = os.path.join(wandb.run.dir, "cli_config.yaml")

@@ -187,5 +187,6 @@ class GreeceFireDataset(Dataset):
         else:
             clc = 0
         
-        x = torch.cat((d_x,s_x,c_x), dim=1).float()
-        return x, labels, torch.Tensor([self.lead_time]).squeeze(), self.variables, self.out_variables
+        x = torch.from_numpy(np.concatenate((dynamic,static,clc), axis=0)).float()
+
+        return x, torch.Tensor([labels]).squeeze(), torch.Tensor([self.lead_time]).squeeze(), self.variables, self.out_variables
