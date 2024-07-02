@@ -1,8 +1,9 @@
-from typing import Optional, Tuple
-
+from typing import Optional
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
-from GreeceFire.dataset import GreeceFireDataset, collate_fn
+
+from GreeceFire.dataset import GreeceFireDataset
+from common_utils.data_utils import collate_fn
 
 
 class GreeceFireDataModule(LightningDataModule):
@@ -20,7 +21,6 @@ class GreeceFireDataModule(LightningDataModule):
     Read the docs:
         https://pytorch-lightning.readthedocs.io/en/latest/extensions/datamodules.html
     """
-
     def __init__(
             self,
             root_dir: str = None,
@@ -32,7 +32,7 @@ class GreeceFireDataModule(LightningDataModule):
             batch_size: int = 64,
             num_workers: int = 1,
             pin_memory: bool = False,
-            access_mode: str = 'temporal',
+            access_mode: str = 'spatial',
             problem_class: str = 'classification',
             nan_fill: float = 0.5,
             sel_dynamic_features=None,
@@ -53,6 +53,7 @@ class GreeceFireDataModule(LightningDataModule):
             sel_dynamic_features = []
         if sel_static_features is None:
             sel_static_features = []
+
         self.prefetch_factor = prefetch_factor
         self.persistent_workers = persistent_workers
         self.nan_fill = nan_fill
@@ -60,13 +61,8 @@ class GreeceFireDataModule(LightningDataModule):
         self.problem_class = problem_class
         self.batch_size = batch_size
         self.val_batch_size = batch_size
-        # if 'spat' in self.access_mode:
-        #     self.val_batch_size = 512
-        # else:
-        #     self.val_batch_size = 2048
         self.num_workers = num_workers
         self.pin_memory = pin_memory
-
         self.sel_dynamic_features = sel_dynamic_features
         self.sel_static_features = sel_static_features
 
@@ -81,6 +77,7 @@ class GreeceFireDataModule(LightningDataModule):
                                           categorical_features=None, nan_fill=self.nan_fill, clc=clc,
                                           variables=self.variables, out_variables=self.out_variables, 
                                           lead_time=self.predict_range)
+
         self.data_val = GreeceFireDataset(dataset_root=root_dir, access_mode=self.access_mode,
                                         problem_class=self.problem_class,
                                         train_val_test='val',
@@ -89,6 +86,7 @@ class GreeceFireDataModule(LightningDataModule):
                                         categorical_features=None, nan_fill=self.nan_fill, clc=clc,
                                         variables=self.variables, out_variables=self.out_variables, 
                                         lead_time=self.predict_range)
+
         self.data_test = GreeceFireDataset(dataset_root=root_dir, access_mode=self.access_mode,
                                          problem_class=self.problem_class,
                                          train_val_test='test',
@@ -120,7 +118,7 @@ class GreeceFireDataModule(LightningDataModule):
             shuffle=True,
             prefetch_factor=self.prefetch_factor,
             persistent_workers=self.persistent_workers,
-            # collate_fn=collate_fn,
+            collate_fn=collate_fn,
             drop_last=False
         )
 
@@ -133,7 +131,7 @@ class GreeceFireDataModule(LightningDataModule):
             shuffle=False,
             prefetch_factor=self.prefetch_factor,
             persistent_workers=self.persistent_workers,
-            # collate_fn=collate_fn,
+            collate_fn=collate_fn,
             drop_last=False
         )
 
@@ -146,6 +144,6 @@ class GreeceFireDataModule(LightningDataModule):
             shuffle=False,
             prefetch_factor=self.prefetch_factor,
             persistent_workers=self.persistent_workers,
-            # collate_fn=collate_fn,
+            collate_fn=collate_fn,
             drop_last=False
         )

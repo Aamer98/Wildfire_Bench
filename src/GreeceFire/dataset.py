@@ -1,30 +1,10 @@
-import numpy.ma as ma
 import torch
-import csv
 import warnings
-import xarray as xr
 from pathlib import Path
-from matplotlib import pyplot as plt
 import numpy as np
-import pandas as pd
-import fsspec
-import zarr
-import os
-import torchvision
-from torch.utils.data import Dataset, DataLoader, TensorDataset
-from pathlib import Path
+from torch.utils.data import Dataset
 import random
 import json
-import random
-
-
-def collate_fn(batch):
-    inp = torch.stack([batch[i][0] for i in range(len(batch))])
-    out = torch.stack([batch[i][1] for i in range(len(batch))])
-    lead_times = torch.cat([batch[i][2] for i in range(len(batch))])
-    variables = batch[0][3]
-    out_variables = batch[0][4]
-    return inp, out, lead_times, variables, out_variables
 
 
 class GreeceFireDataset(Dataset):
@@ -206,4 +186,6 @@ class GreeceFireDataset(Dataset):
             clc = np.nan_to_num(clc, nan=0)
         else:
             clc = 0
-        return dynamic, static, clc, labels, torch.Tensor([self.lead_time]).squeeze(), self.variables, self.out_variables
+        
+        x = torch.cat((d_x,s_x,c_x), dim=1).float()
+        return x, labels, torch.Tensor([self.lead_time]).squeeze(), self.variables, self.out_variables

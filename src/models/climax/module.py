@@ -148,7 +148,7 @@ class ClimaXModule(LightningModule):
         for d in all_loss_dicts:
             for k in d.keys():
                 loss_dict[k] = d[k]
-
+        
         for var in loss_dict.keys():
             self.log(
                 "val/" + var,
@@ -162,6 +162,7 @@ class ClimaXModule(LightningModule):
         return loss_dict
 
     def test_step(self, batch: Any, batch_idx: int):
+        
         x, y, lead_times, variables, out_variables = batch
         
         if self.pred_range < 24:

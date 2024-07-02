@@ -61,7 +61,7 @@ trainer:
     init_args:
       monitor: val/loss
       min_delta: 0.0
-      patience: 5
+      patience: 100
       verbose: false
       mode: min
       strict: true
@@ -103,7 +103,7 @@ trainer:
   check_val_every_n_epoch: 1
   fast_dev_run: false
   accumulate_grad_batches: null
-  max_epochs: 50
+  max_epochs: 100
   min_epochs: 1
   max_steps: -1
   min_steps: null
@@ -178,7 +178,7 @@ model:
   warmup_start_lr: 1.0e-08
   eta_min: 1.0e-08
 data:
-  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_v3.zarr
+  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_coarse.zarr
   variables:
   - lst_day
   - mslp
@@ -199,7 +199,7 @@ data:
   target_shift: 1
   task: classification
   debug: false
-  predict_range: 24
+  predict_range: 192
   hrs_each_step: 1
   batch_size: 2
   num_workers: 1

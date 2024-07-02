@@ -23,8 +23,6 @@ class WildfireSpreadTSDataModule(LightningDataModule):
         batch_size (int, optional): Batch size.
         num_workers (int, optional): Number of workers.
         pin_memory (bool, optional): Whether to pin memory.
-
-        # IMPORTED from wildfireTS repo
         n_leading_observations (int): _description_ Number of days to use as input observation.
         n_leading_observations_test_adjustment (int): _description_ When increasing the number of leading observations, the number of samples per fire is reduced.
               This parameter allows to adjust the number of samples in the test set to be the same across several different values of n_leading_observations, 
@@ -150,7 +148,7 @@ class WildfireSpreadTSDataModule(LightningDataModule):
                                               n_leading_observations=self.n_leading_observations,
                                               n_leading_observations_test_adjustment=self.n_leading_observations_test_adjustment,
                                               crop_side_length=self.crop_side_length,
-                                              load_from_hdf5=self.load_from_hdf5, is_train=False,
+                                              load_from_hdf5=self.load_from_hdf5, is_train=True,
                                               remove_duplicate_features=self.remove_duplicate_features,
                                               features_to_keep=self.features_to_keep, return_doy=self.return_doy,
                                               stats_years=train_years, variables=self.variables, out_variables=self.out_variables,
