@@ -2,7 +2,7 @@ import os
 import wandb
 
 from GreeceFire.utils import MyLightningCLI
-from GreeceFire.module import ClimaXModule
+from models.climax.module import ClimaXModule
 from GreeceFire.datamodule import GreeceFireDataModule
 
 
