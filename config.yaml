@@ -222,7 +222,7 @@ data:
   - burned area
   predict_range: 24
   hrs_each_step: 1
-  batch_size: 2
+  batch_size: 64
   num_workers: 1
   pin_memory: false
   access_mode: spatial
