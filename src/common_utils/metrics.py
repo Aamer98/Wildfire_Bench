@@ -214,7 +214,6 @@ def binary_cross_entropy(pred, y, vars):
         y: [B, V, H, W]
         vars: list of variable names
     """
-    breakpoint()
     bce = binary_cross_entropy_with_logits
     loss = bce(pred ,y.float())
 
