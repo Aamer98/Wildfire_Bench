@@ -11,7 +11,7 @@ trainer:
       dir: null
       id: null
       anonymous: null
-      project: GreeceFire_WFB
+      project: SeasFire_WFB
       log_model: true
       experiment: null
       prefix: ''
@@ -44,7 +44,7 @@ trainer:
       log_momentum: false
   - class_path: pytorch_lightning.callbacks.ModelCheckpoint
     init_args:
-      dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/GreeceFire/checkpoints
+      dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire/checkpoints
       filename: epoch_{epoch:03d}
       monitor: val/loss
       verbose: false
@@ -61,7 +61,7 @@ trainer:
     init_args:
       monitor: val/loss
       min_delta: 0.0
-      patience: 5
+      patience: 100
       verbose: false
       mode: min
       strict: true
@@ -87,7 +87,7 @@ trainer:
         processing_speed: grey70
         metrics: white
       console_kwargs: null
-  default_root_dir: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/GreeceFire
+  default_root_dir: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire
   gradient_clip_val: null
   gradient_clip_algorithm: null
   num_nodes: 1
@@ -103,7 +103,7 @@ trainer:
   check_val_every_n_epoch: 1
   fast_dev_run: false
   accumulate_grad_batches: null
-  max_epochs: 50
+  max_epochs: 100
   min_epochs: 1
   max_steps: -1
   min_steps: null
@@ -140,36 +140,23 @@ model:
     class_path: models.climax.arch.ClimaX
     init_args:
       default_vars:
-      - 1km_16days_NDVI
-      - LST_Day_1km
-      - LST_Night_1km
-      - era5_max_d2m
-      - era5_max_t2m
-      - era5_max_sp
-      - era5_max_tp
-      - sminx
-      - era5_max_wind_speed
-      - era5_min_rh
-      - dem_mean
-      - slope_mean
-      - roads_distance
-      - waterway_distance
-      - population_density
-      - clc_1
-      - clc_2
-      - clc_3
-      - clc_4
-      - clc_5
-      - clc_6
-      - clc_7
-      - clc_8
-      - clc_9
-      - clc_10
-      - burned area
+      - lst_day
+      - mslp
+      - ndvi
+      - pop_dens
+      - ssrd
+      - sst
+      - swvl1
+      - t2m_mean
+      - tp
+      - vpd
+      - gwis_ba
       img_size:
-      - 25
-      - 25
-      output_size: 1
+      - 128
+      - 128
+      output_size:
+      - 128
+      - 128
       patch_size: 2
       output_patch_size: 1
       embed_dim: 1024
@@ -191,60 +178,29 @@ model:
   warmup_start_lr: 1.0e-08
   eta_min: 1.0e-08
 data:
-  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/greekfire/datasets_grl
+  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_coarse.zarr
   variables:
-  - 1km_16days_NDVI
-  - LST_Day_1km
-  - LST_Night_1km
-  - era5_max_d2m
-  - era5_max_t2m
-  - era5_max_sp
-  - era5_max_tp
-  - sminx
-  - era5_max_wind_speed
-  - era5_min_rh
-  - dem_mean
-  - slope_mean
-  - roads_distance
-  - waterway_distance
-  - population_density
-  - clc_1
-  - clc_2
-  - clc_3
-  - clc_4
-  - clc_5
-  - clc_6
-  - clc_7
-  - clc_8
-  - clc_9
-  - clc_10
-  out_variables:
-  - burned area
-  predict_range: 24
+  - lst_day
+  - mslp
+  - ndvi
+  - pop_dens
+  - ssrd
+  - sst
+  - swvl1
+  - t2m_mean
+  - tp
+  - vpd
+  positional_vars:
+  - cos_lat
+  - sin_lat
+  - cos_lon
+  - sin_lon
+  target: gwis_ba
+  target_shift: 1
+  task: classification
+  debug: false
+  predict_range: 192
   hrs_each_step: 1
-  batch_size: 64
+  batch_size: 2
   num_workers: 1
   pin_memory: false
-  access_mode: spatial
-  problem_class: classification
-  nan_fill: -1.0
-  sel_dynamic_features:
-  - 1 km 16 days NDVI
-  - LST_Day_1km
-  - LST_Night_1km
-  - era5_max_d2m
-  - era5_max_t2m
-  - era5_max_sp
-  - era5_max_tp
-  - sminx
-  - era5_max_wind_speed
-  - era5_min_rh
-  sel_static_features:
-  - dem_mean
-  - slope_mean
-  - roads_distance
-  - waterway_distance
-  - population_density
-  prefetch_factor: 2
-  persistent_workers: true
-  clc: vec
