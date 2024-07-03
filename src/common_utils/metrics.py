@@ -4,122 +4,221 @@ import torch.nn as nn
 from torch.nn.functional import binary_cross_entropy_with_logits
 import torchmetrics
 from scipy import stats
+from sklearn.metrics import (
+    accuracy_score, 
+    precision_score, 
+    average_precision_score, 
+    recall_score, 
+    f1_score, 
+    jaccard_score, 
+    confusion_matrix, 
+    auc
+)
 
 
-def iou(pred, y, vars):
+
+def confusion_matrix(logits, y, vars):
+    """Confusion Matrix
+    Args:
+        logits: [B, L, V*p*p]
+        y: [B, V, H, W]
+        vars: list of variable names
+    """
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
+    
+    scores = confusion_matrix(y_true=y, y_pred=preds)
+    score_dict = {}
+    score_dict["confusion_matrix"] = scores
+
+    return score_dict
+
+
+def predicition_sparsity(logits, y, vars):
+    """Prediction Sparsity
+    Args:
+        logits: [B, L, V*p*p]
+        y: [B, V, H, W]
+        vars: list of variable names
+    """
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    preds = preds.tolist()
+
+    sparsity = preds.count(0) / len(preds)
+
+    score_dict = {}
+    score_dict["predicition_sparsity"] = sparsity
+
+    return score_dict
+
+
+def label_sparsity(logits, y, vars):
+    """Label Sparsity
+    Args:
+        logits: [B, L, V*p*p]
+        y: [B, V, H, W]
+        vars: list of variable names
+    """
+    y = y.int().squeeze().flatten().cpu()
+    y = y.tolist()
+
+    sparsity = y.count(0) / len(y)
+
+    score_dict = {}
+    score_dict["label_sparisty"] = sparsity
+
+    return score_dict
+
+
+def auc(logits, y, vars):
+    """auc
+    Args:
+        logits: [B, L, V*p*p]
+        y: [B, V, H, W]
+        vars: list of variable names
+    """
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
+    
+    scores = auc(y_true=y, y_pred=preds)
+    score_dict = {}
+    score_dict["auc"] = scores.mean()
+
+    return score_dict
+
+
+def accuracy(logits, y, vars):
+    """Accuracy
+    Args:
+        logits: [B, L, V*p*p]
+        y: [B, V, H, W]
+        vars: list of variable names
+    """
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
+    
+    scores = accuracy_score(y_true=y, y_pred=preds)
+    score_dict = {}
+    score_dict["accuracy"] = scores.mean()
+
+    return score_dict
+
+
+def iou(logits, y, vars):
     """IoU
     Args:
-        pred: [B, L, V*p*p]
+        logits: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-    iou = torchmetrics.JaccardIndex("binary")
-    pred = torch.round(torch.sigmoid(pred))
-    loss = iou(pred.squeeze(1).cpu(), y.cpu())
-
-    loss_dict = {}
-    with torch.no_grad():
-        loss_dict[f"iou_{vars[0]}"] = loss.mean()
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
     
-    loss_dict["iou"] = loss.mean()
+    scores = jaccard_score(y_true=y, y_pred=preds)
+    score_dict = {}
+    score_dict["iou"] = scores.mean()
 
-    return loss_dict
+    return score_dict
 
 
-def recall(pred, y, vars):
+def recall(logits, y, vars):
     """Recall
     Args:
-        pred: [B, L, V*p*p]
+        logits: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-    rec = torchmetrics.Recall("binary")
-    pred = torch.round(torch.sigmoid(pred))
-    loss = rec(pred.squeeze(1).cpu(), y.cpu())
-
-    loss_dict = {}
-    with torch.no_grad():
-        loss_dict[f"recall_{vars[0]}"] = loss.mean()
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
     
-    loss_dict["recall"] = loss.mean()
+    scores = recall_score(y_true=y, y_pred=preds)
+    score_dict = {}
+    score_dict["recall"] = scores.mean()
 
-    return loss_dict
+    return score_dict
 
 
-def avg_precision(pred, y, vars):
+def avg_precision(logits, y, vars):
     """Average precision
     Args:
-        pred: [B, L, V*p*p]
+        logits: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-    prec = torchmetrics.AveragePrecision("binary")
-    pred = torch.round(torch.sigmoid(pred))
-    loss = prec(pred.squeeze(1).cpu(), y.cpu())
-
-    loss_dict = {}
-    with torch.no_grad():
-        loss_dict[f"avg_precision_{vars[0]}"] = loss.mean()
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
     
-    loss_dict["avg_precision"] = loss.mean()
+    scores = average_precision_score(y, preds)
+    score_dict = {}
+    score_dict["avg_precision"] = scores.mean()
 
-    return loss_dict
+    return score_dict
 
 
-def precision(pred, y, vars):
+def precision(logits, y, vars):
     """Precision
     Args:
-        pred: [B, L, V*p*p]
+        logits: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-    prec = torchmetrics.Precision("binary")
-    pred = torch.round(torch.sigmoid(pred))
-    loss = prec(pred.squeeze(1).cpu(), y.cpu())
-
-    loss_dict = {}
-    with torch.no_grad():
-        loss_dict[f"precision_{vars[0]}"] = loss.mean()
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
     
-    loss_dict["precision"] = loss.mean()
-    
-    return loss_dict
+    scores = precision_score(y_true=y, y_pred=preds)
+    score_dict = {}
+    score_dict["precision"] = scores.mean()
+
+    return score_dict
 
 
-def f1_score(pred, y, vars):
+def f1(logits, y, vars):
     """F1 score
     Args:
-        pred: [B, L, V*p*p]
+        logits: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
-    f1 = torchmetrics.F1Score("binary")
-    pred = torch.round(torch.sigmoid(pred))
-    loss = f1(pred.squeeze(1).cpu(), y.cpu())
-
-    loss_dict = {}
-    with torch.no_grad():
-        loss_dict[f"f1_{vars[0]}"] = loss.mean()
+    preds = torch.sigmoid(logits)
+    preds = torch.round(preds).int()
+    preds = preds.squeeze().flatten().detach().cpu()
+    y = y.int().squeeze().flatten().cpu()
     
-    loss_dict["f1"] = loss.mean()
+    scores = f1_score(y_true=y, y_pred=preds)
+    score_dict = {}
+    score_dict["f1"] = scores.mean()
 
-    return loss_dict
+    return score_dict
 
 
 def binary_cross_entropy(pred, y, vars):
-    """Mean squared error
+    """Binary Cross Entropy
     Args:
         pred: [B, L, V*p*p]
         y: [B, V, H, W]
         vars: list of variable names
     """
+    breakpoint()
     bce = binary_cross_entropy_with_logits
     loss = bce(pred ,y.float())
 
-    loss_dict = {}
-    with torch.no_grad():
-        loss_dict[vars[0]] = loss.mean()
-    
+    loss_dict = {}   
     loss_dict["loss"] = loss.mean()
 
     return loss_dict

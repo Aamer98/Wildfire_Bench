@@ -9,11 +9,15 @@ from models.climax.pos_embed import interpolate_pos_embed
 from models.climax.lr_scheduler import LinearWarmupCosineAnnealingLR
 from common_utils.metrics import (
     binary_cross_entropy,
-    f1_score,
+    confusion_matrix,
+    label_sparsity,
+    auc,
+    accuracy,
     iou,
     recall,
     avg_precision,
-    precision
+    precision,
+    f1
 )
 
 
@@ -105,9 +109,9 @@ class ClimaXModule(LightningModule):
         x, y, lead_times, variables, out_variables = batch
         
         all_loss_dicts, _ = self.net.forward(x, y, lead_times, variables, out_variables, 
-                                            [binary_cross_entropy,f1_score,iou,recall,
-                                            avg_precision,precision])
-
+                                            [binary_cross_entropy,label_sparsity,predicition_sparsity,
+                                            accuracy,iou,recall,avg_precision,precision,f1])
+    
         loss_dict = {}
         for d in all_loss_dicts:
             for k in d.keys():
@@ -140,7 +144,8 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            metrics=[binary_cross_entropy,f1_score,iou,recall,avg_precision,precision],
+            metrics=[binary_cross_entropy,label_sparsity,predicition_sparsity,
+                    accuracy,iou,recall,avg_precision,precision,f1],
             log_postfix=log_postfix,
         )
 
@@ -177,7 +182,8 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            metrics=[binary_cross_entropy,f1_score,iou,recall,avg_precision,precision],
+            metrics=[binary_cross_entropy,label_sparsity,predicition_sparsity,
+                    accuracy,iou,recall,avg_precision,precision,f1],
             log_postfix=log_postfix,
         )
 
