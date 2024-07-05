@@ -11,7 +11,7 @@ trainer:
   accelerator: gpu
   strategy: ddp
 
-  min_epochs: 1
+  min_epochs: 40
   max_epochs: 100
   enable_progress_bar: true
 
