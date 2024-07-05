@@ -3,6 +3,7 @@ logs/
 exps/
 weights/
 wandb/
+jobs/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
