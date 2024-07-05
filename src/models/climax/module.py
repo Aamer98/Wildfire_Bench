@@ -125,6 +125,22 @@ class ClimaXModule(LightningModule):
     def set_test_clim(self, clim):
         self.test_clim = clim
 
+    def get_loss(self):
+        if self.hparams.loss_function == "BCE":
+            return nn.BCEWithLogitsLoss(
+                pos_weight=torch.Tensor(
+                    [self.hparams.pos_class_weight], device=self.device
+                )
+            )
+        elif self.hparams.loss_function == "Focal":
+            return sigmoid_focal_loss
+        elif self.hparams.loss_function == "Lovasz":
+            return LovaszLoss(mode="binary")
+        elif self.hparams.loss_function == "Jaccard":
+            return JaccardLoss(mode="binary")
+        elif self.hparams.loss_function == "Dice":
+            return DiceLoss(mode="binary")
+
     def training_step(self, batch: Any, batch_idx: int):
         x, y, lead_times, variables, out_variables = batch
         
