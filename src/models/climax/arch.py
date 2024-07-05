@@ -277,6 +277,6 @@ class ClimaX(nn.Module):
         _, preds = self.forward(x, y, lead_times, variables, out_variables, metric=None, lat=lat)
         
         if metrics[0] == mse or metrics[0] == binary_cross_entropy:
-            return [m(preds.squeeze(), y.squeeze(), out_variables) for m in metrics]
+            return [m(preds.squeeze(), y.squeeze(), out_variables) for m in metrics], preds
         else:
-            return [m(preds.squeeze(), y.squeeze(), transform, out_variables, lat, clim, log_postfix) for m in metrics]
+            return [m(preds.squeeze(), y.squeeze(), transform, out_variables, lat, clim, log_postfix) for m in metrics], preds

@@ -11,7 +11,7 @@ trainer:
   accelerator: gpu
   strategy: ddp
 
-  min_epochs: 1
+  min_epochs: 40
   max_epochs: 100
   enable_progress_bar: true
 
@@ -59,7 +59,7 @@ trainer:
 
 # ---------------------------- MODEL -------------------------------------------
 model:
-  lr: 5e-4
+  lr: 5e-7
   beta_1: 0.9
   beta_2: 0.99
   weight_decay: 1e-5
@@ -68,7 +68,7 @@ model:
   warmup_start_lr: 1e-8
   eta_min: 1e-8
   experiment: "test"
-  pretrained_path: ""
+  pretrained_path: "/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/1.40625deg.ckpt"
 
   net:
     class_path: models.climax.arch.ClimaX
@@ -145,8 +145,7 @@ data:
   out_variables: ['burned area']
   predict_range: 24
   hrs_each_step: 1 # play around with this later, unsure if its supposed to be 24 since dataset resolution is 24
-  # buffer_size: 10000
-  batch_size: 2
+  batch_size: 128
   num_workers: 1
   pin_memory: False
 

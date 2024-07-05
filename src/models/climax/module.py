@@ -3,6 +3,10 @@ import wandb
 import torch
 from pytorch_lightning import LightningModule
 from torchvision.transforms import transforms
+import torchmetrics
+from segmentation_models_pytorch.losses import (DiceLoss, JaccardLoss,
+                                                LovaszLoss)
+from torchvision.ops import sigmoid_focal_loss
 
 from models.climax.arch import ClimaX
 from models.climax.pos_embed import interpolate_pos_embed
@@ -58,6 +62,21 @@ class ClimaXModule(LightningModule):
         if len(pretrained_path) > 0:
             self.load_pretrained_weights(pretrained_path)
 
+        # WildfireSpreadTS metrics
+        self.train_f1 = torchmetrics.F1Score("binary")
+        self.val_f1 = self.train_f1.clone()
+        self.test_f1 = self.train_f1.clone()
+
+        self.test_avg_precision = torchmetrics.AveragePrecision("binary")
+        self.test_precision = torchmetrics.Precision("binary")
+        self.test_recall = torchmetrics.Recall("binary")
+        self.test_iou = torchmetrics.JaccardIndex("binary")
+        self.conf_mat = torchmetrics.ConfusionMatrix("binary")
+
+        # Plot PR curve at the end of training. Use fixed number of threshold to avoid the plot becoming 800MB+. 
+        self.test_pr_curve = torchmetrics.PrecisionRecallCurve("binary", thresholds=100)
+
+
     def load_pretrained_weights(self, pretrained_path):
         if pretrained_path.startswith("http"):
             checkpoint = torch.hub.load_state_dict_from_url(pretrained_path)
@@ -109,7 +128,7 @@ class ClimaXModule(LightningModule):
     def training_step(self, batch: Any, batch_idx: int):
         x, y, lead_times, variables, out_variables = batch
         
-        all_loss_dicts, _ = self.net.forward(x, y, lead_times, variables, out_variables, 
+        all_loss_dicts, logits = self.net.forward(x, y, lead_times, variables, out_variables, 
                                             [binary_cross_entropy,label_sparsity,predicition_sparsity,
                                             accuracy,iou,recall,avg_precision,precision,f1])
     
@@ -128,6 +147,16 @@ class ClimaXModule(LightningModule):
             )
         loss = loss_dict["loss"]
 
+        f1_ = self.train_f1(logits.squeeze(), y.squeeze())
+        self.log(
+            "train/f1_WSTS",
+            self.train_f1,
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
+
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
@@ -139,7 +168,7 @@ class ClimaXModule(LightningModule):
             days = int(self.pred_range / 24)
             log_postfix = f"{days}_days"
 
-        all_loss_dicts = self.net.evaluate(
+        all_loss_dicts, logits = self.net.evaluate(
             x,
             y,
             lead_times,
@@ -164,6 +193,16 @@ class ClimaXModule(LightningModule):
                 prog_bar=False,
                 sync_dist=True,
             )
+
+        f1_ = self.val_f1(logits.squeeze(), y.squeeze())
+        self.log(
+            "val/f1_WSTS",
+            self.train_f1,
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
         
         return loss_dict
 
@@ -177,7 +216,7 @@ class ClimaXModule(LightningModule):
             days = int(self.pred_range / 24)
             log_postfix = f"{days}_days"
 
-        all_loss_dicts = self.net.evaluate(
+        all_loss_dicts, logits = self.net.evaluate(
             x,
             y,
             lead_times,
@@ -202,6 +241,16 @@ class ClimaXModule(LightningModule):
                 prog_bar=False,
                 sync_dist=True,
             )
+
+        f1_ = self.test_f1(logits.squeeze(), y.squeeze())
+        self.log(
+            "test/f1_WSTS",
+            self.train_f1,
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
 
         return loss_dict
 
