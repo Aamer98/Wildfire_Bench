@@ -45,6 +45,7 @@ class ClimaXModule(LightningModule):
         self,
         net: ClimaX,
         experiment: str = "",
+        loss_function: str = "",
         pretrained_path: str = "",
         lr: float = 5e-4,
         beta_1: float = 0.9,
@@ -54,11 +55,14 @@ class ClimaXModule(LightningModule):
         max_epochs: int = 200000,
         warmup_start_lr: float = 1e-8,
         eta_min: float = 1e-8,
+        pos_class_weight: int = 236 
     ):
         super().__init__()
         self.save_hyperparameters(logger=False, ignore=["net"])
         self.net = net
         self.experiment = experiment
+        self.loss_function = loss_function
+        self.pos_class_weight = pos_class_weight
         if len(pretrained_path) > 0:
             self.load_pretrained_weights(pretrained_path)
 
@@ -76,6 +80,7 @@ class ClimaXModule(LightningModule):
         # Plot PR curve at the end of training. Use fixed number of threshold to avoid the plot becoming 800MB+. 
         self.test_pr_curve = torchmetrics.PrecisionRecallCurve("binary", thresholds=100)
 
+        self.criterion = self.get_loss()
 
     def load_pretrained_weights(self, pretrained_path):
         if pretrained_path.startswith("http"):
@@ -126,28 +131,45 @@ class ClimaXModule(LightningModule):
         self.test_clim = clim
 
     def get_loss(self):
-        if self.hparams.loss_function == "BCE":
+        if self.loss_function  == "BCE":
             return nn.BCEWithLogitsLoss(
                 pos_weight=torch.Tensor(
                     [self.hparams.pos_class_weight], device=self.device
                 )
             )
-        elif self.hparams.loss_function == "Focal":
+        elif self.loss_function == "Focal":
             return sigmoid_focal_loss
-        elif self.hparams.loss_function == "Lovasz":
+        elif self.loss_function == "Lovasz":
             return LovaszLoss(mode="binary")
-        elif self.hparams.loss_function == "Jaccard":
+        elif self.loss_function == "Jaccard":
             return JaccardLoss(mode="binary")
-        elif self.hparams.loss_function == "Dice":
+        elif self.loss_function == "Dice":
             return DiceLoss(mode="binary")
+
+    def compute_loss(self, logits, y):
+        if self.hparams.loss_function == "Focal":
+            return self.loss(
+                logits.squeeze(),
+                y.float().squeeze(),
+                alpha=1 - self.hparams.pos_class_weight,
+                gamma=2,
+                reduction="mean",
+            )
+        else:
+            return self.loss(logits.squeeze(), y.float().squeeze())
 
     def training_step(self, batch: Any, batch_idx: int):
         x, y, lead_times, variables, out_variables = batch
-        
+
         all_loss_dicts, logits = self.net.forward(x, y, lead_times, variables, out_variables, 
-                                            [binary_cross_entropy,label_sparsity,predicition_sparsity,
+                                            [label_sparsity,predicition_sparsity,
                                             accuracy,iou,recall,avg_precision,precision,f1])
-    
+
+        
+        loss = self.criterion(logits, y)
+
+        breakpoint()
+        
         loss_dict = {}
         for d in all_loss_dicts:
             for k in d.keys():
@@ -190,10 +212,14 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            metrics=[binary_cross_entropy,label_sparsity,predicition_sparsity,
+            metrics=[label_sparsity,predicition_sparsity,
                     accuracy,iou,recall,avg_precision,precision,f1],
             log_postfix=log_postfix,
         )
+
+        loss = self.criterion(logits, y)
+
+        breakpoint()
 
         loss_dict = {}
         for d in all_loss_dicts:
@@ -238,10 +264,14 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            metrics=[binary_cross_entropy,label_sparsity,predicition_sparsity,
+            metrics=[label_sparsity,predicition_sparsity,
                     accuracy,iou,recall,avg_precision,precision,f1],
             log_postfix=log_postfix,
         )
+
+        loss = self.criterion(logits, y)
+
+        breakpoint()
 
         loss_dict = {}
         for d in all_loss_dicts:
