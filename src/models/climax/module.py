@@ -1,6 +1,7 @@
 from typing import Any
 import wandb
 import torch
+import torch.nn as nn
 from pytorch_lightning import LightningModule
 from torchvision.transforms import transforms
 import torchmetrics
@@ -165,15 +166,14 @@ class ClimaXModule(LightningModule):
                                             [label_sparsity,predicition_sparsity,
                                             accuracy,iou,recall,avg_precision,precision,f1])
 
-        
         loss = self.criterion(logits, y)
-
-        breakpoint()
         
         loss_dict = {}
         for d in all_loss_dicts:
             for k in d.keys():
                 loss_dict[k] = d[k]
+
+        loss_dict['loss'] = loss
 
         for var in loss_dict.keys():
             self.log(
@@ -219,12 +219,12 @@ class ClimaXModule(LightningModule):
 
         loss = self.criterion(logits, y)
 
-        breakpoint()
-
         loss_dict = {}
         for d in all_loss_dicts:
             for k in d.keys():
                 loss_dict[k] = d[k]
+        
+        loss_dict['loss'] = loss
         
         for var in loss_dict.keys():
             self.log(
@@ -271,12 +271,12 @@ class ClimaXModule(LightningModule):
 
         loss = self.criterion(logits, y)
 
-        breakpoint()
-
         loss_dict = {}
         for d in all_loss_dicts:
             for k in d.keys():
                 loss_dict[k] = d[k]
+
+        loss_dict['loss'] = loss
 
         for var in loss_dict.keys():
             self.log(

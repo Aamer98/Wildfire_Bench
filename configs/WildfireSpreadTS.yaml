@@ -25,7 +25,7 @@ trainer:
   logger:
     class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
-      project: WildfireSpreadTS_WFB
+      project: WildfireSpreadTS_WFB_Dice
       log_model: true
 
   callbacks:
@@ -69,7 +69,7 @@ model:
   eta_min: 1e-8
   pos_class_weight: 236 # for focal loss, need to figure out for other data (relative frequency in augmented 2018 and 2020 fires)^-1
   loss_function: "BCE"
-  experiment: "test_{model.loss_function}"
+  experiment: "test_{model.loss_function}_{data.crop_side_length}_{model.lr}"
   pretrained_path: "/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/1.40625deg.ckpt"
 
   net:
