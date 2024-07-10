@@ -185,7 +185,13 @@ class ClimaXModule(LightningModule):
     def training_step(self, batch: Any, batch_idx: int):
         x, y, lead_times, variables, out_variables = batch
 
-        all_loss_dicts, logits = self.net.forward(x, y, lead_times, variables, out_variables)
+        _, logits = self.net.forward(
+            x, 
+            y, 
+            lead_times, 
+            variables, 
+            out_variables
+            )
         
         loss = self.criterion(logits.squeeze(), y.squeeze())
         self.log(
@@ -221,7 +227,7 @@ class ClimaXModule(LightningModule):
             days = int(self.pred_range / 24)
             log_postfix = f"{days}_days"
 
-        all_loss_dicts, logits = self.net.evaluate(
+        _, logits = self.net.evaluate(
             x,
             y,
             lead_times,
@@ -230,34 +236,28 @@ class ClimaXModule(LightningModule):
             log_postfix=log_postfix
         )
 
-        loss = self.criterion(logits, y)
-
-        loss_dict = {}
-        for d in all_loss_dicts:
-            for k in d.keys():
-                loss_dict[k] = d[k]
-        
-        loss_dict['loss'] = loss
-        
-        for var in loss_dict.keys():
-            self.log(
-                "val/" + var,
-                loss_dict[var],
-                on_step=False,
-                on_epoch=True,
-                prog_bar=False,
-                sync_dist=True,
-            )
-
-        f1_ = self.val_f1(logits.squeeze(), y.squeeze())
+        loss = self.criterion(logits.squeeze(), y.squeeze())
         self.log(
-            "val/f1_WSTS",
-            self.train_f1,
+            "val/loss",
+            loss.item(),
             on_step=True,
             on_epoch=True,
             prog_bar=True,
             logger=True,
+            sync_dist=True,
         )
+
+        for var in self.metrics:
+            if var.split('_')[0]=='val':
+                self.metrics[var](logits.squeeze(), y.squeeze())
+                self.log(
+                    "val/" + var.split('_')[1],
+                    self.metrics[var],
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                )
         
         return loss_dict
 
@@ -280,33 +280,28 @@ class ClimaXModule(LightningModule):
             log_postfix=log_postfix,
         )
 
-        loss = self.criterion(logits, y)
-
-        loss_dict = {}
-        for d in all_loss_dicts:
-            for k in d.keys():
-                loss_dict[k] = d[k]
-
-        loss_dict['loss'] = loss
-
-        for var in loss_dict.keys():
-            self.log(
-                "test/" + var,
-                loss_dict[var],
-                on_step=False,
-                on_epoch=True,
-                prog_bar=False,
-                sync_dist=True,
-            )
-
+        loss = self.criterion(logits.squeeze(), y.squeeze())
         self.log(
-            "test/f1_WSTS",
-            self.train_f1,
+            "val/loss",
+            loss.item(),
             on_step=True,
             on_epoch=True,
             prog_bar=True,
             logger=True,
+            sync_dist=True,
         )
+
+        for var in self.metrics:
+            if var.split('_')[0]=='val':
+                self.metrics[var](logits.squeeze(), y.squeeze())
+                self.log(
+                    "val/" + var.split('_')[1],
+                    self.metrics[var],
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                )
 
         return loss_dict
 
