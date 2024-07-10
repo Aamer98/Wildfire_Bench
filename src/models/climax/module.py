@@ -282,7 +282,7 @@ class ClimaXModule(LightningModule):
 
         loss = self.criterion(logits.squeeze(), y.squeeze())
         self.log(
-            "val/loss",
+            "test/loss",
             loss.item(),
             on_step=True,
             on_epoch=True,
@@ -292,10 +292,10 @@ class ClimaXModule(LightningModule):
         )
 
         for var in self.metrics:
-            if var.split('_')[0]=='val':
+            if var.split('_')[0]=='test':
                 self.metrics[var](logits.squeeze(), y.squeeze())
                 self.log(
-                    "val/" + var.split('_')[1],
+                    "test/" + var.split('_')[1],
                     self.metrics[var],
                     on_step=True,
                     on_epoch=True,
