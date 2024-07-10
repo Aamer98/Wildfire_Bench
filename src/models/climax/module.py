@@ -45,6 +45,7 @@ class ClimaXModule(LightningModule):
     def __init__(
         self,
         net: ClimaX,
+        pretrained_res: str = "",
         experiment: str = "",
         loss_function: str = "",
         pretrained_path: str = "",
@@ -62,6 +63,7 @@ class ClimaXModule(LightningModule):
         self.save_hyperparameters(logger=False, ignore=["net"])
         self.net = net
         self.experiment = experiment
+        self.pretrained_res = pretrained_res
         self.loss_function = loss_function
         self.pos_class_weight = pos_class_weight
         if len(pretrained_path) > 0:
@@ -96,12 +98,12 @@ class ClimaXModule(LightningModule):
         self.val_pr_curve = torchmetrics.PrecisionRecallCurve("binary", thresholds=100)
         self.test_pr_curve = torchmetrics.PrecisionRecallCurve("binary", thresholds=100)
 
-        self.metrics = {'train_f1':train_f1, 'val_f1':val_f1, 'test_f1':test_f1,
-                        'train_avgprecision':train_avg_precision, 'val_avgprecision':val_avg_precision, 
-                        'test_avgprecision':test_avg_precision, 'train_precision':train_precision, 
-                        'val_precision':val_precision, 'test_precision':test_precision,
-                        'train_recall':train_recall, 'val_recall':val_recall, 'test_recall':test_recall,
-                        'train_iou':train_iou, 'val_iou':val_iou, 'test_iou':test_iou
+        self.metrics = {'train_f1':self.train_f1, 'val_f1':self.val_f1, 'test_f1':self.test_f1,
+                        'train_avgprecision':self.train_avg_precision, 'val_avgprecision':self.val_avg_precision, 
+                        'test_avgprecision':self.test_avg_precision, 'train_precision':self.train_precision, 
+                        'val_precision':self.val_precision, 'test_precision':self.test_precision,
+                        'train_recall':self.train_recall, 'val_recall':self.val_recall, 'test_recall':self.test_recall,
+                        'train_iou':self.train_iou, 'val_iou':self.val_iou, 'test_iou':self.test_iou
                         }
 
         self.criterion = self.get_loss()

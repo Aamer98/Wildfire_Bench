@@ -196,8 +196,9 @@ model:
       drop_path: 0.1
       drop_rate: 0.1
       parallel_patch_embed: false
-  experiment: test_{model.loss_function}_{data.crop_side_length}_{model.lr}
-  loss_function: Jaccard
+  pretrained_res: 1.40625deg
+  experiment: local_{loss_function}_{data.crop_side_length}_{lr}_{pretrained_res}_range{data.predict_range}
+  loss_function: BCE
   pretrained_path: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/1.40625deg.ckpt
   lr: 5.0e-07
   beta_1: 0.9

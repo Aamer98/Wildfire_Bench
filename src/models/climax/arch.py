@@ -277,7 +277,7 @@ class ClimaX(nn.Module):
     def evaluate(self, x, y, lead_times, variables, out_variables, metrics, transform=None, lat=None, clim=None, log_postfix=None):
         _, preds = self.forward(x, y, lead_times, variables, out_variables, metric=None, lat=lat)
         
-        # if metrics[0] == mse or metrics[0] == binary_cross_entropy:
-        return [m(preds.squeeze(), y.squeeze(), out_variables) for m in metrics], preds
-        # else:
-        #     return [m(preds.squeeze(), y.squeeze(), transform, out_variables, lat, clim, log_postfix) for m in metrics], preds
+        if metrics is not None
+            return [m(preds.squeeze(), y.squeeze(), out_variables) for m in metrics], preds
+        else:
+            return metrics, preds
