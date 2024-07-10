@@ -27,8 +27,9 @@ class MyLightningCLI(LightningCLI):
         # breakpoint()
         wandb.init(
             # Set the project where this run will be logged
-            project=f"ClimaX_GreeceFire_{self.model.experiment}", 
+            project=f"ClimaX_GreeceFire_WFB", 
             # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
+            name=self.model.experiment,
             # Track hyperparameters and run metadata
             config={
             "learning_rate": self.model.hparams.lr,

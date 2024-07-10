@@ -67,19 +67,43 @@ class ClimaXModule(LightningModule):
         if len(pretrained_path) > 0:
             self.load_pretrained_weights(pretrained_path)
 
-        # WildfireSpreadTS metrics
+        # DEFINE METRICS
+
         self.train_f1 = torchmetrics.F1Score("binary")
         self.val_f1 = self.train_f1.clone()
         self.test_f1 = self.train_f1.clone()
+
+        self.train_avg_precision = torchmetrics.AveragePrecision("binary")
+        self.train_precision = torchmetrics.Precision("binary")
+        self.train_recall = torchmetrics.Recall("binary")
+        self.train_iou = torchmetrics.JaccardIndex("binary")
+
+        self.val_avg_precision = torchmetrics.AveragePrecision("binary")
+        self.val_precision = torchmetrics.Precision("binary")
+        self.val_recall = torchmetrics.Recall("binary")
+        self.val_iou = torchmetrics.JaccardIndex("binary")
 
         self.test_avg_precision = torchmetrics.AveragePrecision("binary")
         self.test_precision = torchmetrics.Precision("binary")
         self.test_recall = torchmetrics.Recall("binary")
         self.test_iou = torchmetrics.JaccardIndex("binary")
-        self.conf_mat = torchmetrics.ConfusionMatrix("binary")
+        
+        self.train_conf_mat = torchmetrics.ConfusionMatrix("binary")
+        self.val_conf_mat = torchmetrics.ConfusionMatrix("binary")
+        self.test_conf_mat = torchmetrics.ConfusionMatrix("binary")
 
         # Plot PR curve at the end of training. Use fixed number of threshold to avoid the plot becoming 800MB+. 
+        self.train_pr_curve = torchmetrics.PrecisionRecallCurve("binary", thresholds=100)
+        self.val_pr_curve = torchmetrics.PrecisionRecallCurve("binary", thresholds=100)
         self.test_pr_curve = torchmetrics.PrecisionRecallCurve("binary", thresholds=100)
+
+        self.metrics = {'train_f1':train_f1, 'val_f1':val_f1, 'test_f1':test_f1,
+                        'train_avgprecision':train_avg_precision, 'val_avgprecision':val_avg_precision, 
+                        'test_avgprecision':test_avg_precision, 'train_precision':train_precision, 
+                        'val_precision':val_precision, 'test_precision':test_precision,
+                        'train_recall':train_recall, 'val_recall':val_recall, 'test_recall':test_recall,
+                        'train_iou':train_iou, 'val_iou':val_iou, 'test_iou':test_iou
+                        }
 
         self.criterion = self.get_loss()
 
@@ -162,27 +186,24 @@ class ClimaXModule(LightningModule):
     def training_step(self, batch: Any, batch_idx: int):
         x, y, lead_times, variables, out_variables = batch
 
-        all_loss_dicts, logits = self.net.forward(x, y, lead_times, variables, out_variables, 
-                                            [label_sparsity,predicition_sparsity,
-                                            accuracy,iou,recall,avg_precision,precision,f1])
+        all_loss_dicts, logits = self.net.forward(x, y, lead_times, variables, out_variables)
 
         loss = self.criterion(logits, y)
         
         loss_dict = {}
-        for d in all_loss_dicts:
-            for k in d.keys():
-                loss_dict[k] = d[k]
-
         loss_dict['loss'] = loss
-
+        
         for var in loss_dict.keys():
-            self.log(
-                "train/" + var,
-                loss_dict[var],
-                on_step=True,
-                on_epoch=False,
-                prog_bar=True,
-            )
+            if var.split('_')[0]=='train':
+                self.metrics[var](logits, y)
+                self.log(
+                    "train/" + var.split('_')[1],
+                    self.metrics[var],
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                )
         loss = loss_dict["loss"]
 
         f1_ = self.train_f1(logits.squeeze(), y.squeeze())
@@ -212,9 +233,7 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            metrics=[label_sparsity,predicition_sparsity,
-                    accuracy,iou,recall,avg_precision,precision,f1],
-            log_postfix=log_postfix,
+            log_postfix=log_postfix
         )
 
         loss = self.criterion(logits, y)
@@ -264,8 +283,6 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            metrics=[label_sparsity,predicition_sparsity,
-                    accuracy,iou,recall,avg_precision,precision,f1],
             log_postfix=log_postfix,
         )
 
@@ -288,7 +305,6 @@ class ClimaXModule(LightningModule):
                 sync_dist=True,
             )
 
-        f1_ = self.test_f1(logits.squeeze(), y.squeeze())
         self.log(
             "test/f1_WSTS",
             self.train_f1,
