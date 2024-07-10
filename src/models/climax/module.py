@@ -68,7 +68,6 @@ class ClimaXModule(LightningModule):
             self.load_pretrained_weights(pretrained_path)
 
         # DEFINE METRICS
-
         self.train_f1 = torchmetrics.F1Score("binary")
         self.val_f1 = self.train_f1.clone()
         self.test_f1 = self.train_f1.clone()
@@ -187,15 +186,21 @@ class ClimaXModule(LightningModule):
         x, y, lead_times, variables, out_variables = batch
 
         all_loss_dicts, logits = self.net.forward(x, y, lead_times, variables, out_variables)
+        
+        loss = self.criterion(logits.squeeze(), y.squeeze())
+        self.log(
+            "train/loss",
+            loss.item(),
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+            sync_dist=True,
+        )
 
-        loss = self.criterion(logits, y)
-        
-        loss_dict = {}
-        loss_dict['loss'] = loss
-        
-        for var in loss_dict.keys():
+        for var in self.metrics:
             if var.split('_')[0]=='train':
-                self.metrics[var](logits, y)
+                self.metrics[var](logits.squeeze(), y.squeeze())
                 self.log(
                     "train/" + var.split('_')[1],
                     self.metrics[var],
@@ -204,17 +209,6 @@ class ClimaXModule(LightningModule):
                     prog_bar=True,
                     logger=True,
                 )
-        loss = loss_dict["loss"]
-
-        f1_ = self.train_f1(logits.squeeze(), y.squeeze())
-        self.log(
-            "train/f1_WSTS",
-            self.train_f1,
-            on_step=True,
-            on_epoch=True,
-            prog_bar=True,
-            logger=True,
-        )
 
         return loss
 
