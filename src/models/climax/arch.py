@@ -239,7 +239,7 @@ class ClimaX(nn.Module):
 
         return x
 
-    def forward(self, x, y, lead_times, variables, out_variables, metric, lat=None):
+    def forward(self, x, y, lead_times, variables, out_variables, metric=None, lat=None):
         """Forward pass through the model.
 
         Args:
