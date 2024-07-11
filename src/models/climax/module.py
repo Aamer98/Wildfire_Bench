@@ -195,7 +195,7 @@ class ClimaXModule(LightningModule):
             out_variables
             )
         
-        loss = self.criterion(logits.squeeze(), y.squeeze())
+        loss = self.criterion(logits.squeeze().float(), y.squeeze().float())
         self.log(
             "train/loss",
             loss.item(),
@@ -206,6 +206,8 @@ class ClimaXModule(LightningModule):
             sync_dist=True,
         )
 
+        loss_dict = {}
+        loss_dict["loss"] = loss
         for var in self.metrics:
             if var.split('_')[0]=='train':
                 self.metrics[var](logits.squeeze(), y.squeeze())
@@ -217,6 +219,7 @@ class ClimaXModule(LightningModule):
                     prog_bar=True,
                     logger=True,
                 )
+                loss_dict[var.split('_')[1]] = self.metrics[var]
 
         return loss
 
@@ -238,7 +241,7 @@ class ClimaXModule(LightningModule):
             log_postfix=log_postfix
         )
 
-        loss = self.criterion(logits.squeeze(), y.squeeze())
+        loss = self.criterion(logits.squeeze().float(), y.squeeze().float())
         self.log(
             "val/loss",
             loss.item(),
@@ -249,6 +252,8 @@ class ClimaXModule(LightningModule):
             sync_dist=True,
         )
 
+        loss_dict = {}
+        loss_dict["loss"] = loss
         for var in self.metrics:
             if var.split('_')[0]=='val':
                 self.metrics[var](logits.squeeze(), y.squeeze())
@@ -260,6 +265,7 @@ class ClimaXModule(LightningModule):
                     prog_bar=True,
                     logger=True,
                 )
+                loss_dict[var.split('_')[1]] = self.metrics[var]
         
         return loss_dict
 
@@ -282,7 +288,7 @@ class ClimaXModule(LightningModule):
             log_postfix=log_postfix,
         )
 
-        loss = self.criterion(logits.squeeze(), y.squeeze())
+        loss = self.criterion(logits.squeeze().float(), y.squeeze().float())
         self.log(
             "test/loss",
             loss.item(),
@@ -293,6 +299,8 @@ class ClimaXModule(LightningModule):
             sync_dist=True,
         )
 
+        loss_dict = {}
+        loss_dict["loss"] = loss
         for var in self.metrics:
             if var.split('_')[0]=='test':
                 self.metrics[var](logits.squeeze(), y.squeeze())
@@ -304,6 +312,7 @@ class ClimaXModule(LightningModule):
                     prog_bar=True,
                     logger=True,
                 )
+                loss_dict[var.split('_')[1]] = self.metrics[var]
 
         return loss_dict
 
