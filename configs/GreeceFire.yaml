@@ -26,6 +26,7 @@ trainer:
     class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
       project: GreeceFire_WFB
+      name: ${model.experiment}
       log_model: true
 
   callbacks:
@@ -41,14 +42,14 @@ trainer:
         save_top_k: 1 # save k best models (determined by above metric)
         save_last: True # additionaly always save model from last epoch
         verbose: False
-        filename: "epoch_{epoch:03d}_{model.experiment}"
+        filename: "best_${model.experiment}"
         auto_insert_metric_name: False
 
     - class_path: pytorch_lightning.callbacks.EarlyStopping
       init_args:
         monitor: "val/loss" # name of the logged metric which determines when model is improving
         mode: "min" # "max" means higher metric value is better, can be also "min"
-        patience: 30 # how many validation epochs of not improving until training stops
+        patience: 100 # how many validation epochs of not improving until training stops
         min_delta: 0. # minimum change in the monitored metric needed to qualify as an improvement
 
     - class_path: pytorch_lightning.callbacks.RichModelSummary
@@ -69,9 +70,9 @@ model:
   eta_min: 1e-8
   pos_class_weight: 236 # for focal loss, need to figure out for other data (relative frequency in augmented 2018 and 2020 fires)^-1
   loss_function: "BCE"
-  experiment: "local_{model.loss_function}_{data.crop_side_length}_{model.lr}_{pretrained_res}_range{data.predict_range}"
-  pretrained_res: "1.40625"
-  pretrained_path: "/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/{model.pretrained_res}.ckpt"
+  experiment: "local_${model.loss_function}_25_${model.lr}_${model.pretrained_res}_range${data.predict_range}"
+  pretrained_res: "1.40625deg"
+  pretrained_path: "/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/${model.pretrained_res}.ckpt"
 
   net:
     class_path: models.climax.arch.ClimaX

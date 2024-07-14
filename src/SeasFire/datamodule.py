@@ -64,7 +64,7 @@ class SeasFireDataModule(LightningDataModule):
             root_dir,
             variables,
             positional_vars: list = None,
-            target: str = 'gwis_ba',
+            out_variables: str = 'gwis_ba',
             target_shift: int = 1,
             task: str = 'classification',
             debug: bool = False,
@@ -79,7 +79,9 @@ class SeasFireDataModule(LightningDataModule):
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
         self.variables = list(variables)
-        self.target = target
+        self.out_variables = out_variables
+
+
         self.target_shift = target_shift
         self.ds = xr.open_zarr(root_dir, consolidated=True)
         self.ds['sst'] = self.ds['sst'].where(self.ds['sst'] >= 0)
@@ -112,7 +114,7 @@ class SeasFireDataModule(LightningDataModule):
             print(self.ds[self.variables])
             # IMPORTANT! Call sample_dataset with ds.copy(). xarray Datasets are mutable
             train_batches, self.mean_std_dict = sample_dataset(self.ds.copy(), input_vars=self.variables,
-                                                               target=self.target,
+                                                               target=self.out_variables,
                                                                target_shift=-self.target_shift, split='train',
                                                                num_timesteps=self.num_timesteps)
             
@@ -121,21 +123,21 @@ class SeasFireDataModule(LightningDataModule):
             with open(f'mean_std_dict_{self.target_shift}.json', 'w') as f:
                 f.write(json.dumps(self.mean_std_dict))
 
-            val_batches, _ = sample_dataset(self.ds.copy(), input_vars=self.variables, target=self.target,
+            val_batches, _ = sample_dataset(self.ds.copy(), input_vars=self.variables, target=self.out_variables,
                                             target_shift=-self.target_shift, split='val',
                                             num_timesteps=self.num_timesteps)
-            test_batches, _ = sample_dataset(self.ds.copy(), input_vars=self.variables, target=self.target,
+            test_batches, _ = sample_dataset(self.ds.copy(), input_vars=self.variables, target=self.out_variables,
                                              target_shift=-self.target_shift, split='test',
                                              num_timesteps=self.num_timesteps)
 
             self.data_train = SeasFireDataset(train_batches, input_vars=self.variables, positional_vars=self.positional_vars,
-                                        target=self.target, lead_time=self.predict_range,
+                                        target=self.out_variables, lead_time=self.predict_range,
                                         mean_std_dict=self.mean_std_dict, task=self.task)
             self.data_val = SeasFireDataset(val_batches, input_vars=self.variables, positional_vars=self.positional_vars,
-                                      target=self.target, lead_time=self.predict_range,
+                                      target=self.out_variables, lead_time=self.predict_range,
                                       mean_std_dict=self.mean_std_dict, task=self.task)
             self.data_test = SeasFireDataset(test_batches, input_vars=self.variables, positional_vars=self.positional_vars,
-                                       target=self.target, lead_time=self.predict_range,
+                                       target=self.out_variables, lead_time=self.predict_range,
                                        mean_std_dict=self.mean_std_dict, task=self.task)
 
     def train_dataloader(self):

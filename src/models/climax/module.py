@@ -77,16 +77,19 @@ class ClimaXModule(LightningModule):
         self.train_avg_precision = torchmetrics.AveragePrecision("binary")
         self.train_precision = torchmetrics.Precision("binary")
         self.train_recall = torchmetrics.Recall("binary")
+        self.train_accuracy = torchmetrics.Accuracy("binary")
         self.train_iou = torchmetrics.JaccardIndex("binary")
 
         self.val_avg_precision = torchmetrics.AveragePrecision("binary")
         self.val_precision = torchmetrics.Precision("binary")
         self.val_recall = torchmetrics.Recall("binary")
+        self.val_accuracy = torchmetrics.Accuracy("binary")
         self.val_iou = torchmetrics.JaccardIndex("binary")
 
         self.test_avg_precision = torchmetrics.AveragePrecision("binary")
         self.test_precision = torchmetrics.Precision("binary")
         self.test_recall = torchmetrics.Recall("binary")
+        self.test_accuracy = torchmetrics.Accuracy("binary")
         self.test_iou = torchmetrics.JaccardIndex("binary")
         
         self.train_conf_mat = torchmetrics.ConfusionMatrix("binary")
@@ -103,7 +106,9 @@ class ClimaXModule(LightningModule):
                         'test_avgprecision':self.test_avg_precision, 'train_precision':self.train_precision, 
                         'val_precision':self.val_precision, 'test_precision':self.test_precision,
                         'train_recall':self.train_recall, 'val_recall':self.val_recall, 'test_recall':self.test_recall,
-                        'train_iou':self.train_iou, 'val_iou':self.val_iou, 'test_iou':self.test_iou
+                        'train_iou':self.train_iou, 'val_iou':self.val_iou, 'test_iou':self.test_iou,
+                        'train_accuracy':self.train_accuracy, 'val_accuracy':self.val_accuracy, 
+                        'test_accuracy':self.test_accuracy
                         }
 
         self.criterion = self.get_loss()
@@ -210,7 +215,7 @@ class ClimaXModule(LightningModule):
         loss_dict["loss"] = loss
         for var in self.metrics:
             if var.split('_')[0]=='train':
-                self.metrics[var](logits.squeeze(), y.squeeze())
+                self.metrics[var](logits.squeeze(), y.squeeze().long())
                 self.log(
                     "train/" + var.split('_')[1],
                     self.metrics[var],
@@ -220,7 +225,7 @@ class ClimaXModule(LightningModule):
                     logger=True,
                 )
                 loss_dict[var.split('_')[1]] = self.metrics[var]
-
+        
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
@@ -256,7 +261,7 @@ class ClimaXModule(LightningModule):
         loss_dict["loss"] = loss
         for var in self.metrics:
             if var.split('_')[0]=='val':
-                self.metrics[var](logits.squeeze(), y.squeeze())
+                self.metrics[var](logits.squeeze(), y.squeeze().long())
                 self.log(
                     "val/" + var.split('_')[1],
                     self.metrics[var],
@@ -266,7 +271,7 @@ class ClimaXModule(LightningModule):
                     logger=True,
                 )
                 loss_dict[var.split('_')[1]] = self.metrics[var]
-        
+
         return loss_dict
 
     def test_step(self, batch: Any, batch_idx: int):
@@ -300,10 +305,10 @@ class ClimaXModule(LightningModule):
         )
 
         loss_dict = {}
-        loss_dict["loss"] = loss
+        loss_dict["loss"] = loss.item()
         for var in self.metrics:
             if var.split('_')[0]=='test':
-                self.metrics[var](logits.squeeze(), y.squeeze())
+                self.metrics[var](logits.squeeze(), y.squeeze().long())
                 self.log(
                     "test/" + var.split('_')[1],
                     self.metrics[var],
@@ -313,7 +318,6 @@ class ClimaXModule(LightningModule):
                     logger=True,
                 )
                 loss_dict[var.split('_')[1]] = self.metrics[var]
-
         return loss_dict
 
     def configure_optimizers(self):

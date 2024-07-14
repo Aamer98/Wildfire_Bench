@@ -4,14 +4,14 @@ trainer:
   logger:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
-      name: null
+      name: local_BCE_128_5e-07_1.40625deg_range24
       save_dir: .
       version: null
       offline: false
       dir: null
       id: null
       anonymous: null
-      project: WildfireSpreadTS_WFB_Dice
+      project: ClimaX_WildfireSpreadTS_WFB
       log_model: true
       experiment: null
       prefix: ''
@@ -45,7 +45,7 @@ trainer:
   - class_path: pytorch_lightning.callbacks.ModelCheckpoint
     init_args:
       dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/WildfireSpreadTS/checkpoints
-      filename: epoch_{epoch:03d}_{model.experiment}
+      filename: best_local_BCE_128_5e-07_1.40625deg_range24
       monitor: val/loss
       verbose: false
       save_last: true
@@ -103,8 +103,8 @@ trainer:
   check_val_every_n_epoch: 1
   fast_dev_run: false
   accumulate_grad_batches: null
-  max_epochs: 100
-  min_epochs: 40
+  max_epochs: 2
+  min_epochs: 1
   max_steps: -1
   min_steps: null
   max_time: null
@@ -197,7 +197,7 @@ model:
       drop_rate: 0.1
       parallel_patch_embed: false
   pretrained_res: 1.40625deg
-  experiment: local_{loss_function}_{data.crop_side_length}_{lr}_{pretrained_res}_range{data.predict_range}
+  experiment: local_BCE_128_5e-07_1.40625deg_range24
   loss_function: BCE
   pretrained_path: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/1.40625deg.ckpt
   lr: 5.0e-07
