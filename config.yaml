@@ -4,14 +4,14 @@ trainer:
   logger:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
-      name: local_BCE_128_5e-07_1.40625deg_range24
+      name: local_BCE_25_5e-07_1.40625deg_range24
       save_dir: .
       version: null
       offline: false
       dir: null
       id: null
       anonymous: null
-      project: ClimaX_WildfireSpreadTS_WFB
+      project: GreeceFire_WFB
       log_model: true
       experiment: null
       prefix: ''
@@ -44,8 +44,8 @@ trainer:
       log_momentum: false
   - class_path: pytorch_lightning.callbacks.ModelCheckpoint
     init_args:
-      dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/WildfireSpreadTS/checkpoints
-      filename: best_local_BCE_128_5e-07_1.40625deg_range24
+      dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/GreeceFire/checkpoints
+      filename: best_local_BCE_25_5e-07_1.40625deg_range24
       monitor: val/loss
       verbose: false
       save_last: true
@@ -87,7 +87,7 @@ trainer:
         processing_speed: grey70
         metrics: white
       console_kwargs: null
-  default_root_dir: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/WildfireSpreadTS
+  default_root_dir: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/GreeceFire
   gradient_clip_val: null
   gradient_clip_algorithm: null
   num_nodes: 1
@@ -103,8 +103,8 @@ trainer:
   check_val_every_n_epoch: 1
   fast_dev_run: false
   accumulate_grad_batches: null
-  max_epochs: 2
-  min_epochs: 1
+  max_epochs: 100
+  min_epochs: 40
   max_steps: -1
   min_steps: null
   max_time: null
@@ -140,52 +140,36 @@ model:
     class_path: models.climax.arch.ClimaX
     init_args:
       default_vars:
-      - VIIRS band M11
-      - VIIRS band I2
-      - VIIRS band I1
-      - NDVI
-      - EVI2
-      - total precipitation
-      - wind speed
-      - wind direction
-      - minimum temperature
-      - maximum temperature
-      - energy release component
-      - specific humidity
-      - slope
-      - aspect
-      - elevation
-      - pdsi
-      - Landcover_Type1
-      - forecast total_precipitation
-      - forecast wind speed
-      - forecast wind direction
-      - forecast temperature
-      - forecast specific humidity
-      - active fire binary
-      - active fire detection times
-      - Landcover_Type1 onehot_1
-      - Landcover_Type1 onehot_2
-      - Landcover_Type1 onehot_3
-      - Landcover_Type1 onehot_4
-      - Landcover_Type1 onehot_5
-      - Landcover_Type1 onehot_6
-      - Landcover_Type1 onehot_7
-      - Landcover_Type1 onehot_8
-      - Landcover_Type1 onehot_9
-      - Landcover_Type1 onehot_10
-      - Landcover_Type1 onehot_11
-      - Landcover_Type1 onehot_12
-      - Landcover_Type1 onehot_13
-      - Landcover_Type1 onehot_14
-      - Landcover_Type1 onehot_15
-      - Landcover_Type1 onehot_16
+      - 1km_16days_NDVI
+      - LST_Day_1km
+      - LST_Night_1km
+      - era5_max_d2m
+      - era5_max_t2m
+      - era5_max_sp
+      - era5_max_tp
+      - sminx
+      - era5_max_wind_speed
+      - era5_min_rh
+      - dem_mean
+      - slope_mean
+      - roads_distance
+      - waterway_distance
+      - population_density
+      - clc_1
+      - clc_2
+      - clc_3
+      - clc_4
+      - clc_5
+      - clc_6
+      - clc_7
+      - clc_8
+      - clc_9
+      - clc_10
+      - burned area
       img_size:
-      - 128
-      - 128
-      output_size:
-      - 128
-      - 128
+      - 25
+      - 25
+      output_size: 1
       patch_size: 2
       output_patch_size: 1
       embed_dim: 1024
@@ -197,7 +181,7 @@ model:
       drop_rate: 0.1
       parallel_patch_embed: false
   pretrained_res: 1.40625deg
-  experiment: local_BCE_128_5e-07_1.40625deg_range24
+  experiment: local_BCE_25_5e-07_1.40625deg_range24
   loss_function: BCE
   pretrained_path: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/1.40625deg.ckpt
   lr: 5.0e-07
@@ -210,60 +194,60 @@ model:
   eta_min: 1.0e-08
   pos_class_weight: 236
 data:
-  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/wildfirespreadTS_hdf5/
+  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/greekfire/datasets_grl
   variables:
-  - VIIRS band M11
-  - VIIRS band I2
-  - VIIRS band I1
-  - NDVI
-  - EVI2
-  - total precipitation
-  - wind speed
-  - wind direction
-  - minimum temperature
-  - maximum temperature
-  - energy release component
-  - specific humidity
-  - slope
-  - aspect
-  - elevation
-  - pdsi
-  - Landcover_Type1
-  - forecast total_precipitation
-  - forecast wind speed
-  - forecast wind direction
-  - forecast temperature
-  - forecast specific humidity
-  - active fire binary
-  - active fire detection times
-  - Landcover_Type1 onehot_1
-  - Landcover_Type1 onehot_2
-  - Landcover_Type1 onehot_3
-  - Landcover_Type1 onehot_4
-  - Landcover_Type1 onehot_5
-  - Landcover_Type1 onehot_6
-  - Landcover_Type1 onehot_7
-  - Landcover_Type1 onehot_8
-  - Landcover_Type1 onehot_9
-  - Landcover_Type1 onehot_10
-  - Landcover_Type1 onehot_11
-  - Landcover_Type1 onehot_12
-  - Landcover_Type1 onehot_13
-  - Landcover_Type1 onehot_14
-  - Landcover_Type1 onehot_15
-  - Landcover_Type1 onehot_16
-  n_leading_observations: 1
-  n_leading_observations_test_adjustment: 1
-  crop_side_length: 128
-  load_from_hdf5: true
-  remove_duplicate_features: false
-  features_to_keep: null
-  return_doy: false
-  data_fold_id: 0
+  - 1km_16days_NDVI
+  - LST_Day_1km
+  - LST_Night_1km
+  - era5_max_d2m
+  - era5_max_t2m
+  - era5_max_sp
+  - era5_max_tp
+  - sminx
+  - era5_max_wind_speed
+  - era5_min_rh
+  - dem_mean
+  - slope_mean
+  - roads_distance
+  - waterway_distance
+  - population_density
+  - clc_1
+  - clc_2
+  - clc_3
+  - clc_4
+  - clc_5
+  - clc_6
+  - clc_7
+  - clc_8
+  - clc_9
+  - clc_10
   out_variables:
-  - active fire binary
+  - burned area
   predict_range: 24
   hrs_each_step: 1
-  batch_size: 2
+  batch_size: 128
   num_workers: 1
   pin_memory: false
+  access_mode: spatial
+  problem_class: classification
+  nan_fill: -1.0
+  sel_dynamic_features:
+  - 1 km 16 days NDVI
+  - LST_Day_1km
+  - LST_Night_1km
+  - era5_max_d2m
+  - era5_max_t2m
+  - era5_max_sp
+  - era5_max_tp
+  - sminx
+  - era5_max_wind_speed
+  - era5_min_rh
+  sel_static_features:
+  - dem_mean
+  - slope_mean
+  - roads_distance
+  - waterway_distance
+  - population_density
+  prefetch_factor: 2
+  persistent_workers: true
+  clc: vec

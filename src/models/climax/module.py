@@ -32,7 +32,7 @@ class ClimaXModule(LightningModule):
 
     Args:
         net (ClimaX): ClimaX model.
-        pretrained_path (str, optional): Path to pre-trained checkpoint.
+        pretrained_res (str, optional): Resolution of pre-training dataset.
         lr (float, optional): Learning rate.
         beta_1 (float, optional): Beta 1 for AdamW.
         beta_2 (float, optional): Beta 2 for AdamW.
@@ -48,7 +48,6 @@ class ClimaXModule(LightningModule):
         pretrained_res: str = "",
         experiment: str = "",
         loss_function: str = "",
-        pretrained_path: str = "",
         lr: float = 5e-4,
         beta_1: float = 0.9,
         beta_2: float = 0.99,
@@ -66,6 +65,7 @@ class ClimaXModule(LightningModule):
         self.pretrained_res = pretrained_res
         self.loss_function = loss_function
         self.pos_class_weight = pos_class_weight
+        pretrained_path = f"/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/{pretrained_res}.ckpt"
         if len(pretrained_path) > 0:
             self.load_pretrained_weights(pretrained_path)
 

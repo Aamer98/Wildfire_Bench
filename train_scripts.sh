@@ -5,7 +5,7 @@ python src/WildfireSpreadTS/train.py --config configs/WildfireSpreadTS.yaml --tr
 CUDA_VISIBLE_DEVICES=0 python src/WildfireSpreadTS/train.py --config configs/WildfireSpreadTS.yaml --trainer.devices=1
 
 # SeasFire
-CUDA_VISIBLE_DEVICES=0 python src/SeasFire/train.py --config configs/SeasFire.yaml --trainer.devices=1
+CUDA_VISIBLE_DEVICES=1 python src/SeasFire/train.py --config configs/SeasFire.yaml --trainer.devices=1
 
 # GreekFire
 CUDA_VISIBLE_DEVICES=0 python src/GreeceFire/train.py --config configs/GreeceFire.yaml --trainer.devices=1

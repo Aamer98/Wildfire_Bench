@@ -72,7 +72,6 @@ model:
   loss_function: "BCE"
   experiment: "local_${model.loss_function}_25_${model.lr}_${model.pretrained_res}_range${data.predict_range}"
   pretrained_res: "1.40625deg"
-  pretrained_path: "/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/${model.pretrained_res}.ckpt"
 
   net:
     class_path: models.climax.arch.ClimaX
