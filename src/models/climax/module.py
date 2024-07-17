@@ -14,7 +14,7 @@ from models.climax.pos_embed import interpolate_pos_embed
 from models.climax.lr_scheduler import LinearWarmupCosineAnnealingLR
 from common_utils.metrics import (
     label_sparsity,
-    prediction_sparisty
+    prediction_sparsity
 )
 
 
@@ -219,15 +219,15 @@ class ClimaXModule(LightningModule):
         
         self.log(
             "train/label_sparsity",
-            label_sparsity(y)['label_sparisty'],
+            label_sparsity(y)['label_sparsity'],
             on_step=True,
             on_epoch=True,
             prog_bar=True,
             logger=True,
         )
         self.log(
-            "train/prediction_sparisty",
-            prediction_sparisty(logits)['prediction_sparisty'],
+            "train/prediction_sparsity",
+            prediction_sparsity(logits)['prediction_sparsity'],
             on_step=True,
             on_epoch=True,
             prog_bar=True,
@@ -282,15 +282,15 @@ class ClimaXModule(LightningModule):
 
         self.log(
             "val/label_sparsity",
-            label_sparsity(y)['label_sparisty'],
+            label_sparsity(y)['label_sparsity'],
             on_step=True,
             on_epoch=True,
             prog_bar=True,
             logger=True,
         )
         self.log(
-            "val/prediction_sparisty",
-            prediction_sparisty(logits)['prediction_sparisty'],
+            "val/prediction_sparsity",
+            prediction_sparsity(logits)['prediction_sparsity'],
             on_step=True,
             on_epoch=True,
             prog_bar=True,
@@ -346,15 +346,15 @@ class ClimaXModule(LightningModule):
 
         self.log(
             "test/label_sparsity",
-            label_sparsity(y)['label_sparisty'],
+            label_sparsity(y)['label_sparsity'],
             on_step=True,
             on_epoch=True,
             prog_bar=True,
             logger=True,
         )
         self.log(
-            "test/prediction_sparisty",
-            prediction_sparisty(logits)['prediction_sparisty'],
+            "test/prediction_sparsity",
+            prediction_sparsity(logits)['prediction_sparsity'],
             on_step=True,
             on_epoch=True,
             prog_bar=True,

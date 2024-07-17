@@ -65,7 +65,7 @@ def label_sparsity(y):
     sparsity = y.count(0) / len(y)
 
     score_dict = {}
-    score_dict["label_sparisty"] = sparsity
+    score_dict["label_sparsity"] = sparsity
 
     return score_dict
 
