@@ -8,11 +8,23 @@ class MyLightningCLI(LightningCLI):
     def add_arguments_to_parser(self, parser):
         parser.link_arguments("model.crop_side_length",
                               "data.crop_side_length")
+        parser.add_lightning_class_args(ModelCheckpoint, 
+                                        "my_model_checkpoint")
+        parser.set_defaults({"my_model_checkpoint.monitor": "val/loss", 
+                             "my_model_checkpoint.mode": "min",
+                             "my_model_checkpoint.save_top_k": 1,
+                             "my_model_checkpoint.save_last": True,
+                             "my_model_checkpoint.verbose": False,
+                             "my_model_checkpoint.auto_insert_metric_name": False})                                
 
     def before_instantiate_classes(self):  
         self.config.model.experiment = f"local_{self.config.model.loss_function}_{self.config.data.crop_side_length}_{self.config.model.lr}_{self.config.model.pretrained_res}_range{self.config.data.predict_range}"
         self.config.model.pretrained_path = f"/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/{self.config.model.pretrained_res}.ckpt"
+        
         self.config.trainer.logger.init_args.name = self.config.model.experiment
+
+        self.config.my_model_checkpoint.dirpath = f"{self.config.trainer.default_root_dir}/checkpoints"
+        self.config.my_model_checkpoint.filename = f"best_{self.config.model.experiment}"
 
     def before_fit(self):
         self.wandb_setup()
