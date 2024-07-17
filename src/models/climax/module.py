@@ -46,6 +46,7 @@ class ClimaXModule(LightningModule):
         self,
         net: ClimaX,
         pretrained_res: str = "",
+        pretrained_path: str = "",
         experiment: str = "",
         loss_function: str = "",
         lr: float = 5e-4,
@@ -56,16 +57,15 @@ class ClimaXModule(LightningModule):
         max_epochs: int = 200000,
         warmup_start_lr: float = 1e-8,
         eta_min: float = 1e-8,
-        pos_class_weight: int = 236 
+        pos_class_weight: int = 236,
+        crop_side_length: int = 128,
     ):
         super().__init__()
         self.save_hyperparameters(logger=False, ignore=["net"])
         self.net = net
-        self.experiment = experiment
         self.pretrained_res = pretrained_res
         self.loss_function = loss_function
         self.pos_class_weight = pos_class_weight
-        pretrained_path = f"/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/{pretrained_res}.ckpt"
         if len(pretrained_path) > 0:
             self.load_pretrained_weights(pretrained_path)
 

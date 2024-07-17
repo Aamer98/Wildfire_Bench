@@ -5,6 +5,15 @@ from pytorch_lightning.utilities import rank_zero_only
 
 
 class MyLightningCLI(LightningCLI):
+    def add_arguments_to_parser(self, parser):
+        parser.link_arguments("model.crop_side_length",
+                              "data.crop_side_length")
+
+    def before_instantiate_classes(self):  
+        self.config.model.experiment = f"local_{self.config.model.loss_function}_{self.config.data.crop_side_length}_{self.config.model.lr}_{self.config.model.pretrained_res}_range{self.config.data.predict_range}"
+        self.config.model.pretrained_path = f"/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/{self.config.model.pretrained_res}.ckpt"
+        self.config.trainer.logger.init_args.name = self.config.model.experiment
+
     def before_fit(self):
         self.wandb_setup()
 
@@ -24,18 +33,6 @@ class MyLightningCLI(LightningCLI):
         Also define min and max metrics in wandb, because otherwise it just reports the 
         last known values, which is not what we want.
         """
-        wandb.init(
-            # Set the project where this run will be logged
-            project=f"ClimaX_SeasFire_WFB", 
-            # We pass a run name (otherwise it’ll be randomly assigned, like sunshine-lollypop-10)
-            name=self.model.experiment,
-            # Track hyperparameters and run metadata
-            config={
-            "learning_rate": self.model.hparams.lr,
-            "seed": self.config.seed_everything,
-            "batch_size": self.datamodule.hparams.batch_size,
-        })
-
         config_file_name = os.path.join(wandb.run.dir, "cli_config.yaml")
         cfg_string = self.parser.dump(self.config, skip_none=False)
 

@@ -26,7 +26,7 @@ trainer:
     class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
       project: WildfireSpreadTS_WFB
-      name: ${model.experiment}
+      name: test
       log_model: true
 
   callbacks:
@@ -42,7 +42,7 @@ trainer:
         save_top_k: 1 # save k best models (determined by above metric)
         save_last: True # additionaly always save model from last epoch
         verbose: False
-        filename: "best_${model.experiment}"
+        filename: "best" # Need to figure saving name on the fly
         auto_insert_metric_name: False
 
     - class_path: pytorch_lightning.callbacks.EarlyStopping
@@ -70,7 +70,6 @@ model:
   eta_min: 1e-8
   pos_class_weight: 236 # for focal loss, need to figure out for other data (relative frequency in augmented 2018 and 2020 fires)^-1
   loss_function: "BCE"
-  experiment: "local_${model.loss_function}_${data.crop_side_length}_${model.lr}_${model.pretrained_res}_range${data.predict_range}"
   pretrained_res: "1.40625deg"
 
   net:
