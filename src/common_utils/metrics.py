@@ -36,7 +36,7 @@ def confusion_matrix(logits, y, vars):
     return score_dict
 
 
-def predicition_sparsity(logits):
+def prediction_sparsity(logits):
     """Prediction Sparsity
     Args:
         logits: [B, L, V*p*p]
@@ -49,7 +49,7 @@ def predicition_sparsity(logits):
     sparsity = preds.count(0) / len(preds)
 
     score_dict = {}
-    score_dict["predicition_sparsity"] = sparsity
+    score_dict["prediction_sparsity"] = sparsity
 
     return score_dict
 
