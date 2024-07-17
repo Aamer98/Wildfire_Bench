@@ -36,12 +36,10 @@ def confusion_matrix(logits, y, vars):
     return score_dict
 
 
-def predicition_sparsity(logits, y, vars):
+def predicition_sparsity(logits):
     """Prediction Sparsity
     Args:
         logits: [B, L, V*p*p]
-        y: [B, V, H, W]
-        vars: list of variable names
     """
     preds = torch.sigmoid(logits)
     preds = torch.round(preds).int()
@@ -56,12 +54,10 @@ def predicition_sparsity(logits, y, vars):
     return score_dict
 
 
-def label_sparsity(logits, y, vars):
+def label_sparsity(y):
     """Label Sparsity
     Args:
-        logits: [B, L, V*p*p]
         y: [B, V, H, W]
-        vars: list of variable names
     """
     y = y.int().squeeze().flatten().cpu()
     y = y.tolist()

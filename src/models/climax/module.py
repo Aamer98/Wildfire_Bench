@@ -13,17 +13,8 @@ from models.climax.arch import ClimaX
 from models.climax.pos_embed import interpolate_pos_embed
 from models.climax.lr_scheduler import LinearWarmupCosineAnnealingLR
 from common_utils.metrics import (
-    binary_cross_entropy,
-    confusion_matrix,
     label_sparsity,
-    predicition_sparsity,
-    auc,
-    accuracy,
-    iou,
-    recall,
-    avg_precision,
-    precision,
-    f1
+    predicition_sparsity
 )
 
 
@@ -226,6 +217,26 @@ class ClimaXModule(LightningModule):
                 )
                 loss_dict[var.split('_')[1]] = self.metrics[var]
         
+        loss_dict['train/label_sparsity'] = label_sparsity(y)['label_sparisty']
+        loss_dict['train/prediction_sparisty'] = predicition_sparsity(logits)['prediction_sparisty']
+
+        self.log(
+            "train/label_sparsity",
+            label_sparsity(y)['label_sparisty'],
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
+        self.log(
+            "train/prediction_sparisty",
+            predicition_sparsity(logits)['prediction_sparisty'],
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
+
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
@@ -271,6 +282,26 @@ class ClimaXModule(LightningModule):
                     logger=True,
                 )
                 loss_dict[var.split('_')[1]] = self.metrics[var]
+
+        loss_dict['label_sparsity'] = label_sparsity(y)['label_sparisty']
+        loss_dict['prediction_sparisty'] = predicition_sparsity(logits)['prediction_sparisty']
+
+        self.log(
+            "val/label_sparsity",
+            label_sparsity(y)['label_sparisty'],
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
+        self.log(
+            "val/prediction_sparisty",
+            predicition_sparsity(logits)['prediction_sparisty'],
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
 
         return loss_dict
 
@@ -318,6 +349,27 @@ class ClimaXModule(LightningModule):
                     logger=True,
                 )
                 loss_dict[var.split('_')[1]] = self.metrics[var]
+        
+        loss_dict['label_sparsity'] = label_sparsity(y)['label_sparisty']
+        loss_dict['prediction_sparisty'] = predicition_sparsity(logits)['prediction_sparisty']
+
+        self.log(
+            "test/label_sparsity",
+            label_sparsity(y)['label_sparisty'],
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
+        self.log(
+            "test/prediction_sparisty",
+            predicition_sparsity(logits)['prediction_sparisty'],
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
+
         return loss_dict
 
     def configure_optimizers(self):
