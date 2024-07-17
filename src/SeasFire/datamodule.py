@@ -63,6 +63,7 @@ class SeasFireDataModule(LightningDataModule):
             self,
             root_dir,
             variables,
+            crop_side_length: int = 128,
             positional_vars: list = None,
             out_variables: str = 'gwis_ba',
             target_shift: int = 1,
@@ -78,9 +79,9 @@ class SeasFireDataModule(LightningDataModule):
 
         # this line allows to access init params with 'self.hparams' attribute
         self.save_hyperparameters(logger=False)
+        self.crop_side_length = crop_side_length
         self.variables = list(variables)
         self.out_variables = out_variables
-
 
         self.target_shift = target_shift
         self.ds = xr.open_zarr(root_dir, consolidated=True)

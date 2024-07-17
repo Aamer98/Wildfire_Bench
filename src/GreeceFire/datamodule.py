@@ -23,6 +23,7 @@ class GreeceFireDataModule(LightningDataModule):
     """
     def __init__(
             self,
+            crop_side_length: int = 25,
             root_dir: str = None,
             variables: list = None,
             out_variables: list = None,
@@ -44,6 +45,7 @@ class GreeceFireDataModule(LightningDataModule):
         super().__init__()
 
         self.root_dir = root_dir
+        self.crop_side_length = crop_side_length
         self.variables = variables
         self.out_variables = out_variables
         self.predict_range = predict_range
