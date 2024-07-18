@@ -22,7 +22,7 @@ class MyLightningCLI(LightningCLI):
                              "my_model_checkpoint.auto_insert_metric_name": False})                                
 
     def before_instantiate_classes(self):  
-        self.config.model.experiment = f"local_{self.config.model.loss_function}_{self.config.data.crop_side_length}_{self.config.model.lr}_{self.config.model.pretrained_res}_range{self.config.data.predict_range}"
+        self.config.model.experiment = f"local_seed{self.config.seed_everything}_{self.config.model.loss_function}_{self.config.data.crop_side_length}_{self.config.model.lr}_{self.config.model.pretrained_res}_range{self.config.data.predict_range}"
         self.config.model.pretrained_path = f"/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/{self.config.model.pretrained_res}.ckpt"
         
         self.config.trainer.logger.init_args.name = self.config.model.experiment
