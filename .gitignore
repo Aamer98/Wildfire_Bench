@@ -4,6 +4,7 @@ exps/
 weights/
 wandb/
 jobs/
+train_scripts.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
