@@ -34,17 +34,6 @@ trainer:
       init_args:
         logging_interval: "step"
 
-    # - class_path: pytorch_lightning.callbacks.ModelCheckpoint
-    #   init_args:
-    #     dirpath: "${trainer.default_root_dir}/checkpoints"
-    #     monitor: "val/loss" # name of the logged metric which determines when model is improving
-    #     mode: "min" # "max" means higher metric value is better, can be also "min"
-    #     save_top_k: 1 # save k best models (determined by above metric)
-    #     save_last: True # additionaly always save model from last epoch
-    #     verbose: False
-    #     filename: "best_${model.experiment}"
-    #     auto_insert_metric_name: False
-
     - class_path: pytorch_lightning.callbacks.EarlyStopping
       init_args:
         monitor: "val/loss" # name of the logged metric which determines when model is improving

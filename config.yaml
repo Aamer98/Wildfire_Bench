@@ -4,7 +4,7 @@ trainer:
   logger:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
-      name: local_BCE_128_5e-07_1.40625deg_range24
+      name: local_BCE_128_5e-07_5.625deg_range24
       save_dir: .
       version: null
       offline: false
@@ -181,9 +181,9 @@ model:
       drop_path: 0.1
       drop_rate: 0.1
       parallel_patch_embed: false
-  pretrained_res: 1.40625deg
-  pretrained_path: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/1.40625deg.ckpt
-  experiment: local_BCE_128_5e-07_1.40625deg_range24
+  pretrained_res: 5.625deg
+  pretrained_path: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/5.625deg.ckpt
+  experiment: local_BCE_128_5e-07_5.625deg_range24
   loss_function: BCE
   lr: 5.0e-07
   beta_1: 0.9
@@ -254,7 +254,7 @@ data:
   pin_memory: false
 my_model_checkpoint:
   dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/WildfireSpreadTS/checkpoints
-  filename: best_local_BCE_128_5e-07_1.40625deg_range24
+  filename: best_local_BCE_128_5e-07_5.625deg_range24
   monitor: val/loss
   verbose: false
   save_last: true

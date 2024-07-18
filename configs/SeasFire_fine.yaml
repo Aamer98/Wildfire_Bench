@@ -2,7 +2,7 @@ seed_everything: 42
 
 # ---------------------------- TRAINER -------------------------------------------
 trainer:
-  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire}
+  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire_fine}
 
   precision: 16
 
@@ -25,7 +25,7 @@ trainer:
   logger:
     class_path: pytorch_lightning.loggers.wandb.WandbLogger
     init_args:
-      project: SeasFire_WFB
+      project: SeasFire_fine_WFB
       name: test
       log_model: true
 
@@ -90,7 +90,7 @@ model:
 
 # ---------------------------- DATA -------------------------------------------
 data:
-  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_coarse.zarr
+  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_v3.zarr
   variables: [
       'lst_day',
       'mslp',
