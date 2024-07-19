@@ -224,7 +224,7 @@ class ClimaX(nn.Module):
                 id = var_ids[i]
                 embeds.append(self.token_embeds[id](x[:, i : i + 1]))
             x = torch.stack(embeds, dim=1)  # B, V, L, D
-        
+
         # add variable embedding
         var_embed = self.get_var_emb(self.var_embed, variables)
         x = x + var_embed.unsqueeze(2)  # B, V, L, D
@@ -235,14 +235,14 @@ class ClimaX(nn.Module):
         # add pos embedding
         x = x + self.pos_embed
 
-        
+
         # add lead time embedding
         lead_time_emb = self.lead_time_embed(lead_times.unsqueeze(-1))  # B, D
         lead_time_emb = lead_time_emb
         x = x + lead_time_emb  # B, L, D
 
         x = self.pos_drop(x)
-        
+
         # apply Transformer blocks
         for blk in self.blocks:
             x = blk(x)
@@ -264,10 +264,10 @@ class ClimaX(nn.Module):
         """
         out_transformers = self.forward_encoder(x, lead_times, variables)  # B, L, D
         preds = self.head(out_transformers)  # B, L, V*p*p
-        
+
         preds = self.unpatchify(preds)
         out_var_ids = self.get_var_ids(tuple(out_variables), preds.device)
-        
+
         preds = preds[:, out_var_ids]
 
         if self.output_size==1:
@@ -287,7 +287,7 @@ class ClimaX(nn.Module):
 
     def evaluate(self, x, y, lead_times, variables, out_variables, metrics=None, transform=None, lat=None, clim=None, log_postfix=None):
         _, preds = self.forward(x, y, lead_times, variables, out_variables, metric=None, lat=lat)
-        
+
         if metrics is not None:
             return [m(preds.squeeze(), y.squeeze(), out_variables) for m in metrics], preds
         else:

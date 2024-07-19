@@ -1,4 +1,4 @@
-Fri Jul 19 12:59:23 2024       
+Fri Jul 19 16:00:08 2024       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
 |-----------------------------------------+------------------------+----------------------+
@@ -7,7 +7,7 @@ Fri Jul 19 12:59:23 2024
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
 |   0  NVIDIA A100-SXM4-40GB          Off |   00000000:C1:00.0 Off |                    0 |
-| N/A   28C    P0             51W /  400W |       0MiB /  40960MiB |      0%      Default |
+| N/A   30C    P0             51W /  400W |       0MiB /  40960MiB |      0%      Default |
 |                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
                                                                                          
@@ -21,28 +21,23 @@ Fri Jul 19 12:59:23 2024
 W&B offline. Running your script from this directory will only write metadata locally. Use wandb disabled to completely turn off W&B.
 ------------------------------------------<Move Data>---------------------------------------
 ---------------------------------------<Run the program>------------------------------------
-13:14:07
+16:04:27
 /home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/cli.py:369: LightningDeprecationWarning: LightningCLI's 'save_config_overwrite' init parameter is deprecated from v1.8 and will be removed in v1.10. Use 'save_config_kwargs' instead.
   rank_zero_deprecation(
 /home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/utilities/cli.py:109: LightningDeprecationWarning: `LightningCLI.auto_registry` parameter was deprecated in v1.7 and will be removed in v1.9. Now any imported subclass is automatically available by name in `LightningCLI` without any need to explicitly register it.
   rank_zero_deprecation(_deprecate_auto_registry_message)
-Traceback (most recent call last):
-  File "/localscratch/aamer98.31755169.0/Wildfire_Bench/src/GreeceFire/train.py", line 33, in <module>
-    main()
-  File "/localscratch/aamer98.31755169.0/Wildfire_Bench/src/GreeceFire/train.py", line 11, in main
-    cli = MyLightningCLI(
-  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 344, in __init__
-    self.parse_arguments(self.parser, args)
-  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 518, in parse_arguments
-    self.config = parser.parse_args(args)
-  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/jsonargparse/deprecated.py", line 116, in patched_parse
-    cfg = parse_method(*args, _skip_check=_skip_check, **kwargs)
-  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/jsonargparse/core.py", line 392, in parse_args
-    self.error(f'Unrecognized arguments: {" ".join(unk)}')
-  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/jsonargparse/core.py", line 1010, in error
-    raise ParserError(message)
-jsonargparse.util.ParserError: Unrecognized arguments: --model.freeze_encoder=True
-----------------------------------------<Move logs>------------------------------------
-13:14:26
-----------------------------------------<End of program>------------------------------------
-13:14:30
+[rank: 0] Global seed set to 42
+wandb: Tracking run with wandb version 0.17.1
+wandb: W&B syncing is set to `offline` in this directory.  
+wandb: Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+/opt/software/slurm/bin/srun
+/opt/software/slurm/bin/srun
+Using 16bit native Automatic Mixed Precision (AMP)
+Trainer already configured with model summary callbacks: [<class 'pytorch_lightning.callbacks.rich_model_summary.RichModelSummary'>]. Skipping setting a default `ModelSummary` callback.
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+/opt/software/slurm/bin/srun
+[rank: 0] Global seed set to 42
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/12

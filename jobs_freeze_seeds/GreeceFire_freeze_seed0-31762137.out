@@ -41,3 +41,8 @@ HPU available: False, using: 0 HPUs
 /opt/software/slurm/bin/srun
 [rank: 0] Global seed set to 0
 Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/12
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 12 processes
+----------------------------------------------------------------------------------------------------
+
