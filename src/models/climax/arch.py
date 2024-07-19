@@ -45,10 +45,12 @@ class ClimaX(nn.Module):
         drop_path=0.1,
         drop_rate=0.1,
         parallel_patch_embed=False,
+        freeze_encoder=False,
     ):
         super().__init__()
 
         self.output_size = output_size
+        self.freeze_encoder = freeze_encoder
         # TODO: remove time_history parameter
         self.img_size = img_size
         self.patch_size = patch_size
@@ -110,6 +112,15 @@ class ClimaX(nn.Module):
         # --------------------------------------------------------------------------
 
         self.initialize_weights()
+        
+        if freeze_encoder:
+            for name, p in self.blocks.named_parameters():
+                name = name.lower()
+                # we do not freeze the norm layers, as suggested by https://arxiv.org/abs/2103.05247
+                if 'norm' in name:
+                    continue
+                else:
+                    p.requires_grad_(False)
 
     def initialize_weights(self):
         # initialize pos_emb and var_emb

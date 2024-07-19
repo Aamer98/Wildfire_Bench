@@ -1,0 +1,48 @@
+Fri Jul 19 13:05:37 2024       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:81:00.0 Off |                    0 |
+| N/A   35C    P0             53W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+W&B offline. Running your script from this directory will only write metadata locally. Use wandb disabled to completely turn off W&B.
+------------------------------------------<Move Data>---------------------------------------
+---------------------------------------<Run the program>------------------------------------
+13:09:57
+/home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/cli.py:369: LightningDeprecationWarning: LightningCLI's 'save_config_overwrite' init parameter is deprecated from v1.8 and will be removed in v1.10. Use 'save_config_kwargs' instead.
+  rank_zero_deprecation(
+/home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/utilities/cli.py:109: LightningDeprecationWarning: `LightningCLI.auto_registry` parameter was deprecated in v1.7 and will be removed in v1.9. Now any imported subclass is automatically available by name in `LightningCLI` without any need to explicitly register it.
+  rank_zero_deprecation(_deprecate_auto_registry_message)
+Traceback (most recent call last):
+  File "/localscratch/aamer98.31755177.0/Wildfire_Bench/src/SeasFire/train.py", line 33, in <module>
+    main()
+  File "/localscratch/aamer98.31755177.0/Wildfire_Bench/src/SeasFire/train.py", line 11, in main
+    cli = MyLightningCLI(
+  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 344, in __init__
+    self.parse_arguments(self.parser, args)
+  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 518, in parse_arguments
+    self.config = parser.parse_args(args)
+  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/jsonargparse/deprecated.py", line 116, in patched_parse
+    cfg = parse_method(*args, _skip_check=_skip_check, **kwargs)
+  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/jsonargparse/core.py", line 392, in parse_args
+    self.error(f'Unrecognized arguments: {" ".join(unk)}')
+  File "/home/aamer98/my_env/climaX/lib/python3.10/site-packages/jsonargparse/core.py", line 1010, in error
+    raise ParserError(message)
+jsonargparse.util.ParserError: Unrecognized arguments: --model.freeze_encoder=True
+----------------------------------------<Move logs>------------------------------------
+13:10:10
+----------------------------------------<End of program>------------------------------------
+13:10:13

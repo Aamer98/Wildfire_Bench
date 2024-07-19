@@ -32,6 +32,7 @@ class MyLightningCLI(LightningCLI):
 
         self.config.my_model_checkpoint.dirpath = f"{self.config.trainer.default_root_dir}/checkpoints"
         self.config.my_model_checkpoint.filename = f"best_{self.config.model.experiment}"
+        self.config.model.net.init_args.freeze_encoder = self.config.model.freeze_encoder
 
     def before_fit(self):
         self.wandb_setup()

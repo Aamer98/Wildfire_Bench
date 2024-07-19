@@ -50,10 +50,12 @@ class ClimaXModule(LightningModule):
         eta_min: float = 1e-8,
         pos_class_weight: int = 236,
         crop_side_length: int = 128,
+        freeze_encoder: bool = False
     ):
         super().__init__()
         self.save_hyperparameters(logger=False, ignore=["net"])
         self.net = net
+        self.freeze_encoder = freeze_encoder
         self.pretrained_res = pretrained_res
         self.loss_function = loss_function
         self.pos_class_weight = pos_class_weight

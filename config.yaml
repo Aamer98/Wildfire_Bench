@@ -1,10 +1,10 @@
 # pytorch_lightning==1.8.0
-seed_everything: 42
+seed_everything: 5
 trainer:
   logger:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
-      name: local_BCE_128_5e-07_5.625deg_range192
+      name: CC_seed5_BCE_128_5e-07_1.40625deg_range192
       save_dir: .
       version: null
       offline: false
@@ -152,9 +152,10 @@ model:
       drop_path: 0.1
       drop_rate: 0.1
       parallel_patch_embed: false
-  pretrained_res: 5.625deg
-  pretrained_path: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/5.625deg.ckpt
-  experiment: local_BCE_128_5e-07_5.625deg_range192
+      freeze_encoder: true
+  pretrained_res: 1.40625deg
+  pretrained_path: /home/aamer98/projects/def-ebrahimi/aamer98/repos/Wildfire_Bench/weights/1.40625deg.ckpt
+  experiment: CC_seed5_BCE_128_5e-07_1.40625deg_range192
   loss_function: BCE
   lr: 5.0e-07
   beta_1: 0.9
@@ -166,8 +167,9 @@ model:
   eta_min: 1.0e-08
   pos_class_weight: 236
   crop_side_length: 128
+  freeze_encoder: true
 data:
-  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_v3.zarr
+  root_dir: /home/aamer98/projects/def-ebrahimi/aamer98/data/seasfire/SeasFireCube_v3.zarr
   variables:
   - lst_day
   - mslp
@@ -195,7 +197,7 @@ data:
   pin_memory: false
 my_model_checkpoint:
   dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire_fine/checkpoints
-  filename: best_local_BCE_128_5e-07_5.625deg_range192
+  filename: best_CC_seed5_BCE_128_5e-07_1.40625deg_range192
   monitor: val/loss
   verbose: false
   save_last: true
