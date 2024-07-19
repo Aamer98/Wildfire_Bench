@@ -19,9 +19,12 @@ class MyLightningCLI(LightningCLI):
                              "my_model_checkpoint.auto_insert_metric_name": False})                                
 
     def before_instantiate_classes(self):  
-        self.config.model.experiment = f"local_seed{self.config.seed_everything}_{self.config.model.loss_function}_{self.config.data.crop_side_length}_{self.config.model.lr}_{self.config.model.pretrained_res}_range{self.config.data.predict_range}"
-        self.config.model.pretrained_path = f"/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/weights/{self.config.model.pretrained_res}.ckpt"
-        
+        os.environ["WANDB_API_KEY"] = "7a9cbed74d12db3de9cef466bb7b7cf08bdf1ea4"
+        os.environ["WANDB_MODE"] = "offline"        
+
+        self.config.model.experiment = f"CC_seed{self.config.seed_everything}_{self.config.model.loss_function}_{self.config.data.crop_side_length}_{self.config.model.lr}_{self.config.model.pretrained_res}_range{self.config.data.predict_range}"
+        self.config.model.pretrained_path = f"/home/aamer98/projects/def-ebrahimi/aamer98/repos/Wildfire_Bench/weights/{self.config.model.pretrained_res}.ckpt"
+
         self.config.trainer.logger.init_args.name = self.config.model.experiment
 
         self.config.my_model_checkpoint.dirpath = f"{self.config.trainer.default_root_dir}/checkpoints"

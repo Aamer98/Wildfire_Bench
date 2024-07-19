@@ -1,0 +1,38 @@
+Fri Jul 19 09:41:36 2024       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:01:00.0 Off |                    0 |
+| N/A   33C    P0             52W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+W&B offline. Running your script from this directory will only write metadata locally. Use wandb disabled to completely turn off W&B.
+------------------------------------------<Move Data>---------------------------------------
+Archive:  wildfirespreadTS_hdf5.zip
+   creating: 2018/
+   creating: 2019/
+   creating: 2020/
+   creating: 2021/
+  inflating: 2020/fire_24333006.hdf5  
+  inflating: 2020/fire_24695756.hdf5  
+  inflating: 2020/fire_24462127.hdf5  
+  inflating: 2020/fire_24191393.hdf5  
+  inflating: 2020/fire_24104644.hdf5  
+  inflating: 2020/fire_24333279.hdf5  
+  inflating: 2020/fire_24332731.hdf5  
+  inflating: 2020/fire_24604777.hdf5  
+  inflating: 2020/fire_24333012.hdf5  
+  inflating: 2020/fire_24332923.hdf5  
+  inflating: 2020/fire_24604463.hdf5  
