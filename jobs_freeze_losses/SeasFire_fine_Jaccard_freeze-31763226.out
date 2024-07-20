@@ -1,4 +1,4 @@
-Fri Jul 19 09:29:06 2024       
+Fri Jul 19 16:18:29 2024       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
 |-----------------------------------------+------------------------+----------------------+
@@ -6,7 +6,7 @@ Fri Jul 19 09:29:06 2024
 | Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
 |                                         |                        |               MIG M. |
 |=========================================+========================+======================|
-|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:01:00.0 Off |                    0 |
+|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:81:00.0 Off |                    0 |
 | N/A   35C    P0             55W /  400W |       0MiB /  40960MiB |      0%      Default |
 |                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
@@ -21,12 +21,12 @@ Fri Jul 19 09:29:06 2024
 W&B offline. Running your script from this directory will only write metadata locally. Use wandb disabled to completely turn off W&B.
 ------------------------------------------<Move Data>---------------------------------------
 ---------------------------------------<Run the program>------------------------------------
-09:42:21
+16:22:07
 /home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/cli.py:369: LightningDeprecationWarning: LightningCLI's 'save_config_overwrite' init parameter is deprecated from v1.8 and will be removed in v1.10. Use 'save_config_kwargs' instead.
   rank_zero_deprecation(
 /home/aamer98/my_env/climaX/lib/python3.10/site-packages/pytorch_lightning/utilities/cli.py:109: LightningDeprecationWarning: `LightningCLI.auto_registry` parameter was deprecated in v1.7 and will be removed in v1.9. Now any imported subclass is automatically available by name in `LightningCLI` without any need to explicitly register it.
   rank_zero_deprecation(_deprecate_auto_registry_message)
-[rank: 0] Global seed set to 0
+[rank: 0] Global seed set to 42
 wandb: Tracking run with wandb version 0.17.1
 wandb: W&B syncing is set to `offline` in this directory.  
 wandb: Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
@@ -39,7 +39,7 @@ TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
 HPU available: False, using: 0 HPUs
 /opt/software/slurm/bin/srun
-[rank: 0] Global seed set to 0
+[rank: 0] Global seed set to 42
 Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/12
 ----------------------------------------------------------------------------------------------------
 distributed_backend=nccl

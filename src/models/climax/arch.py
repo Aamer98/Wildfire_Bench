@@ -235,7 +235,6 @@ class ClimaX(nn.Module):
         # add pos embedding
         x = x + self.pos_embed
 
-
         # add lead time embedding
         lead_time_emb = self.lead_time_embed(lead_times.unsqueeze(-1))  # B, D
         lead_time_emb = lead_time_emb
