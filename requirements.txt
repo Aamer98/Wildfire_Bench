@@ -17,7 +17,6 @@ click==8.1.7+computecanada
 click-plugins==1.1.1+computecanada
 cliff==4.7.0
 cligj==0.7.2+computecanada
--e git+https://github.com/Aamer98/ClimaX.git@2acf9a5f3799158aca75cd47cc148972345d67fb#egg=ClimaX
 cloudpickle==3.0.0+computecanada
 cmaes==0.10.0+computecanada
 cmd2==2.4.3
@@ -143,7 +142,6 @@ virtualenv==20.26.3
 wandb==0.17.1
 wcwidth==0.2.13+computecanada
 Werkzeug==2.2.2+computecanada
--e git+https://github.com/Aamer98/Wildfire_Bench.git@74b210a65b5984fe2bea8e8cbd45f607bf728edd#egg=Wildfire_Bench
 xarray==2023.2.0+computecanada
 xbatcher==0.3.0
 yarl==1.8.2
