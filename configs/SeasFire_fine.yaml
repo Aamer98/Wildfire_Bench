@@ -2,7 +2,7 @@ seed_everything: 42
 
 # ---------------------------- TRAINER -------------------------------------------
 trainer:
-  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire_fine}
+  default_root_dir: ${oc.env:OUTPUT_DIR,/home/aamer98/scratch/repos/Wildfire_Bench/logs/SeasFire_fine}
 
   precision: 16
 
@@ -92,7 +92,7 @@ model:
 
 # ---------------------------- DATA -------------------------------------------
 data:
-  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_v3.zarr
+  root_dir: /home/aamer98/scratch/data/seasfire/SeasFireCube_v3.zarr
   variables: [
       'lst_day',
       'mslp',
