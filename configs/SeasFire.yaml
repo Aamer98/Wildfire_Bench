@@ -2,11 +2,11 @@ seed_everything: 42
 
 # ---------------------------- TRAINER -------------------------------------------
 trainer:
-  default_root_dir: ${oc.env:OUTPUT_DIR,/home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire}
+  default_root_dir: ${oc.env:OUTPUT_DIR,/home/aamer98/scratch/repos/Wildfire_Bench/logs/SeasFire}
 
   precision: 16
 
-  gpus: null
+  gpus: -1
   num_nodes: 1
   accelerator: gpu
   strategy: ddp
@@ -92,7 +92,7 @@ model:
 
 # ---------------------------- DATA -------------------------------------------
 data:
-  root_dir: /home/as26840@ens.ad.etsmtl.ca/data/seasfire/SeasFireCube_coarse.zarr
+  root_dir: /home/aamer98/scratch/data/seasfire/SeasFireCube_coarse.zarr
   variables: [
       'lst_day',
       'mslp',

@@ -1,17 +1,17 @@
 # pytorch_lightning==1.8.0
-seed_everything: 5
+seed_everything: 42
 trainer:
   logger:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
-      name: CC_seed5_BCE_128_5e-07_1.40625deg_range192
+      name: CC_seed42_BCE_128_5e-07_1.40625deg_range24
       save_dir: .
       version: null
       offline: false
       dir: null
       id: null
       anonymous: null
-      project: SeasFire_fine_WFB
+      project: WildfireSpreadTS_WFB
       log_model: true
       experiment: null
       prefix: ''
@@ -72,7 +72,7 @@ trainer:
         processing_speed: grey70
         metrics: white
       console_kwargs: null
-  default_root_dir: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire_fine
+  default_root_dir: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/WildfireSpreadTS
   gradient_clip_val: null
   gradient_clip_algorithm: null
   num_nodes: 1
@@ -88,8 +88,8 @@ trainer:
   check_val_every_n_epoch: 1
   fast_dev_run: false
   accumulate_grad_batches: null
-  max_epochs: 100
-  min_epochs: 40
+  max_epochs: 2
+  min_epochs: 1
   max_steps: -1
   min_steps: null
   max_time: null
@@ -125,17 +125,46 @@ model:
     class_path: models.climax.arch.ClimaX
     init_args:
       default_vars:
-      - lst_day
-      - mslp
-      - ndvi
-      - pop_dens
-      - ssrd
-      - sst
-      - swvl1
-      - t2m_mean
-      - tp
-      - vpd
-      - gwis_ba
+      - VIIRS band M11
+      - VIIRS band I2
+      - VIIRS band I1
+      - NDVI
+      - EVI2
+      - total precipitation
+      - wind speed
+      - wind direction
+      - minimum temperature
+      - maximum temperature
+      - energy release component
+      - specific humidity
+      - slope
+      - aspect
+      - elevation
+      - pdsi
+      - Landcover_Type1
+      - forecast total_precipitation
+      - forecast wind speed
+      - forecast wind direction
+      - forecast temperature
+      - forecast specific humidity
+      - active fire binary
+      - active fire detection times
+      - Landcover_Type1 onehot_1
+      - Landcover_Type1 onehot_2
+      - Landcover_Type1 onehot_3
+      - Landcover_Type1 onehot_4
+      - Landcover_Type1 onehot_5
+      - Landcover_Type1 onehot_6
+      - Landcover_Type1 onehot_7
+      - Landcover_Type1 onehot_8
+      - Landcover_Type1 onehot_9
+      - Landcover_Type1 onehot_10
+      - Landcover_Type1 onehot_11
+      - Landcover_Type1 onehot_12
+      - Landcover_Type1 onehot_13
+      - Landcover_Type1 onehot_14
+      - Landcover_Type1 onehot_15
+      - Landcover_Type1 onehot_16
       img_size:
       - 128
       - 128
@@ -152,10 +181,10 @@ model:
       drop_path: 0.1
       drop_rate: 0.1
       parallel_patch_embed: false
-      freeze_encoder: true
+      freeze_encoder: false
   pretrained_res: 1.40625deg
   pretrained_path: /home/aamer98/projects/def-ebrahimi/aamer98/repos/Wildfire_Bench/weights/1.40625deg.ckpt
-  experiment: CC_seed5_BCE_128_5e-07_1.40625deg_range192
+  experiment: CC_seed42_BCE_128_5e-07_1.40625deg_range24
   loss_function: BCE
   lr: 5.0e-07
   beta_1: 0.9
@@ -167,37 +196,67 @@ model:
   eta_min: 1.0e-08
   pos_class_weight: 236
   crop_side_length: 128
-  freeze_encoder: true
+  freeze_encoder: false
 data:
-  root_dir: /home/aamer98/projects/def-ebrahimi/aamer98/data/seasfire/SeasFireCube_v3.zarr
+  root_dir: /home/aamer98/projects/def-ebrahimi/aamer98/data/wildfirespreadTS_unitTest
   variables:
-  - lst_day
-  - mslp
-  - ndvi
-  - pop_dens
-  - ssrd
-  - sst
-  - swvl1
-  - t2m_mean
-  - tp
-  - vpd
-  positional_vars:
-  - cos_lat
-  - sin_lat
-  - cos_lon
-  - sin_lon
-  out_variables: gwis_ba
-  target_shift: 1
-  task: classification
-  debug: false
-  predict_range: 192
+  - VIIRS band M11
+  - VIIRS band I2
+  - VIIRS band I1
+  - NDVI
+  - EVI2
+  - total precipitation
+  - wind speed
+  - wind direction
+  - minimum temperature
+  - maximum temperature
+  - energy release component
+  - specific humidity
+  - slope
+  - aspect
+  - elevation
+  - pdsi
+  - Landcover_Type1
+  - forecast total_precipitation
+  - forecast wind speed
+  - forecast wind direction
+  - forecast temperature
+  - forecast specific humidity
+  - active fire binary
+  - active fire detection times
+  - Landcover_Type1 onehot_1
+  - Landcover_Type1 onehot_2
+  - Landcover_Type1 onehot_3
+  - Landcover_Type1 onehot_4
+  - Landcover_Type1 onehot_5
+  - Landcover_Type1 onehot_6
+  - Landcover_Type1 onehot_7
+  - Landcover_Type1 onehot_8
+  - Landcover_Type1 onehot_9
+  - Landcover_Type1 onehot_10
+  - Landcover_Type1 onehot_11
+  - Landcover_Type1 onehot_12
+  - Landcover_Type1 onehot_13
+  - Landcover_Type1 onehot_14
+  - Landcover_Type1 onehot_15
+  - Landcover_Type1 onehot_16
+  n_leading_observations: 1
+  n_leading_observations_test_adjustment: 1
+  load_from_hdf5: true
+  remove_duplicate_features: false
+  features_to_keep: null
+  return_doy: false
+  data_fold_id: 0
+  out_variables:
+  - active fire binary
+  predict_range: 24
   hrs_each_step: 1
   batch_size: 2
   num_workers: 1
   pin_memory: false
 my_model_checkpoint:
-  dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/SeasFire_fine/checkpoints
-  filename: best_CC_seed5_BCE_128_5e-07_1.40625deg_range192
+  dirpath: /home/as26840@ens.ad.etsmtl.ca/repos/Wildfire_Bench/logs/WildfireSpreadTS/checkpoints
+  filename: best_CC_seed42_BCE_128_5e-07_1.40625deg_range24
   monitor: val/loss
   verbose: false
   save_last: true
