@@ -259,7 +259,7 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            log_postfix=log_postfix
+            # log_postfix=log_postfix
         )
 
         loss = self.criterion(logits.squeeze().float(), y.squeeze().float())
@@ -324,7 +324,7 @@ class ClimaXModule(LightningModule):
             lead_times,
             variables,
             out_variables,
-            log_postfix=log_postfix,
+            # log_postfix=log_postfix,
         )
 
         loss = self.criterion(logits.squeeze().float(), y.squeeze().float())
