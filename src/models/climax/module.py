@@ -185,7 +185,6 @@ class ClimaXModule(LightningModule):
             return self.loss(logits.squeeze(), y.float().squeeze())
 
     def training_step(self, batch: Any, batch_idx: int):
-        
         self.net.train()
         
         x, y, lead_times, variables, out_variables = batch
@@ -244,7 +243,6 @@ class ClimaXModule(LightningModule):
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
-        
         self.net.eval()
         
         x, y, lead_times, variables, out_variables = batch
@@ -309,8 +307,7 @@ class ClimaXModule(LightningModule):
 
         return loss_dict
 
-    def test_step(self, batch: Any, batch_idx: int):
-        
+    def test_step(self, batch: Any, batch_idx: int):  
         self.net.eval()
 
         x, y, lead_times, variables, out_variables = batch

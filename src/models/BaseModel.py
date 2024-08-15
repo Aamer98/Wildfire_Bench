@@ -20,7 +20,8 @@ class BaseModel(LightningModule):
     """Lightning module for global forecasting with the ClimaX model.
 
     Args:
-        experi
+        loss_function (str, optional): Loss function to use. Defaults to "".
+        pos_class_weight (int, optional): Weight for positive class. Defaults to 236.
     """
     def __init__(
         self,
@@ -121,9 +122,11 @@ class BaseModel(LightningModule):
             return self.loss(logits.squeeze(), y.float().squeeze())
 
     def training_step(self, batch: Any, batch_idx: int):
+        self.net.train()
+        
         x, y, lead_times, variables, out_variables = batch
 
-        _, logits = self.net.forward(
+        logits = self.net.forward(
             x, 
             y, 
             lead_times, 
@@ -177,6 +180,8 @@ class BaseModel(LightningModule):
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
+        self.net.eval()
+        
         x, y, lead_times, variables, out_variables = batch
         
         if self.pred_range < 24:
@@ -185,7 +190,7 @@ class BaseModel(LightningModule):
             days = int(self.pred_range / 24)
             log_postfix = f"{days}_days"
 
-        _, logits = self.net.evaluate(
+        logits = self.net.forward(
             x,
             y,
             lead_times,
@@ -239,8 +244,9 @@ class BaseModel(LightningModule):
 
         return loss_dict
 
-    def test_step(self, batch: Any, batch_idx: int):
-        
+    def test_step(self, batch: Any, batch_idx: int):  
+        self.net.eval()
+
         x, y, lead_times, variables, out_variables = batch
         
         if self.pred_range < 24:
@@ -249,7 +255,7 @@ class BaseModel(LightningModule):
             days = int(self.pred_range / 24)
             log_postfix = f"{days}_days"
 
-        all_loss_dicts, logits = self.net.evaluate(
+        logits = self.net.forward(
             x,
             y,
             lead_times,
