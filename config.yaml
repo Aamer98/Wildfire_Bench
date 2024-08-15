@@ -182,8 +182,9 @@ model:
       drop_rate: 0.1
       parallel_patch_embed: false
       freeze_encoder: false
+  pretrained: false
   pretrained_res: 1.40625deg
-  pretrained_path: /home/aamer98/projects/def-ebrahimi/aamer98/repos/Wildfire_Bench/weights/1.40625deg.ckpt
+  pretrained_path: ''
   experiment: CC_seed42_BCE_128_5e-07_1.40625deg_range24
   loss_function: BCE
   lr: 5.0e-07
@@ -251,7 +252,7 @@ data:
   - active fire binary
   predict_range: 24
   hrs_each_step: 1
-  batch_size: 2
+  batch_size: 1
   num_workers: 1
   pin_memory: false
 my_model_checkpoint:

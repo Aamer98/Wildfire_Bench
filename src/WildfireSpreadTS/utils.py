@@ -26,7 +26,8 @@ class MyLightningCLI(LightningCLI):
         os.environ["WANDB_MODE"] = "offline"        
 
         self.config.model.experiment = f"CC_seed{self.config.seed_everything}_{self.config.model.loss_function}_{self.config.data.crop_side_length}_{self.config.model.lr}_{self.config.model.pretrained_res}_range{self.config.data.predict_range}"
-        self.config.model.pretrained_path = f"/home/aamer98/projects/def-ebrahimi/aamer98/repos/Wildfire_Bench/weights/{self.config.model.pretrained_res}.ckpt"
+        if self.config.model.pretrained:
+            self.config.model.pretrained_path = f"/home/aamer98/projects/def-ebrahimi/aamer98/repos/Wildfire_Bench/weights/{self.config.model.pretrained_res}.ckpt"
         
         self.config.trainer.logger.init_args.name = self.config.model.experiment
 

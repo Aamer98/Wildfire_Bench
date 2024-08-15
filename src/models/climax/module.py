@@ -36,6 +36,7 @@ class ClimaXModule(LightningModule):
     def __init__(
         self,
         net: ClimaX,
+        pretrained: bool = True,
         pretrained_res: str = "",
         pretrained_path: str = "",
         experiment: str = "",
@@ -56,6 +57,7 @@ class ClimaXModule(LightningModule):
         self.save_hyperparameters(logger=False, ignore=["net"])
         self.net = net
         self.freeze_encoder = freeze_encoder
+        self.pretrained = pretrained
         self.pretrained_res = pretrained_res
         self.loss_function = loss_function
         self.pos_class_weight = pos_class_weight

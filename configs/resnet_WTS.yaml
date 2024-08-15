@@ -64,60 +64,57 @@ model:
   freeze_encoder: False
 
   net:
-    class_path: models.climax.arch.ClimaX
+    class_path: models.wildfireTS.SMPModel
     init_args:
+      encoder_name: resnet18
+      n_channels: 40
+      flatten_temporal_dimension: true
+      pos_class_weight: 236 # (relative frequency in augmented 2018 and 2020 fires)^-1
+      loss_function: Dice
       default_vars: [
-      'VIIRS band M11',
-      'VIIRS band I2',
-      'VIIRS band I1',
-      'NDVI',
-      'EVI2',
-      'total precipitation',
-      'wind speed',
-      'wind direction',
-      'minimum temperature',
-      'maximum temperature',
-      'energy release component',
-      'specific humidity',
-      'slope',
-      'aspect',
-      'elevation',
-      'pdsi',
-      'Landcover_Type1',
-      'forecast total_precipitation',
-      'forecast wind speed',
-      'forecast wind direction',
-      'forecast temperature',
-      'forecast specific humidity',
-      'active fire binary',
-      'active fire detection times',
-      'Landcover_Type1 onehot_1',
-      'Landcover_Type1 onehot_2',
-      'Landcover_Type1 onehot_3',
-      'Landcover_Type1 onehot_4',
-      'Landcover_Type1 onehot_5',
-      'Landcover_Type1 onehot_6',
-      'Landcover_Type1 onehot_7',
-      'Landcover_Type1 onehot_8',
-      'Landcover_Type1 onehot_9',
-      'Landcover_Type1 onehot_10',
-      'Landcover_Type1 onehot_11',
-      'Landcover_Type1 onehot_12',
-      'Landcover_Type1 onehot_13',
-      'Landcover_Type1 onehot_14',
-      'Landcover_Type1 onehot_15',
-      'Landcover_Type1 onehot_16'
-    ]
+        'VIIRS band M11',
+        'VIIRS band I2',
+        'VIIRS band I1',
+        'NDVI',
+        'EVI2',
+        'total precipitation',
+        'wind speed',
+        'wind direction',
+        'minimum temperature',
+        'maximum temperature',
+        'energy release component',
+        'specific humidity',
+        'slope',
+        'aspect',
+        'elevation',
+        'pdsi',
+        'Landcover_Type1',
+        'forecast total_precipitation',
+        'forecast wind speed',
+        'forecast wind direction',
+        'forecast temperature',
+        'forecast specific humidity',
+        'active fire binary',
+        'active fire detection times',
+        'Landcover_Type1 onehot_1',
+        'Landcover_Type1 onehot_2',
+        'Landcover_Type1 onehot_3',
+        'Landcover_Type1 onehot_4',
+        'Landcover_Type1 onehot_5',
+        'Landcover_Type1 onehot_6',
+        'Landcover_Type1 onehot_7',
+        'Landcover_Type1 onehot_8',
+        'Landcover_Type1 onehot_9',
+        'Landcover_Type1 onehot_10',
+        'Landcover_Type1 onehot_11',
+        'Landcover_Type1 onehot_12',
+        'Landcover_Type1 onehot_13',
+        'Landcover_Type1 onehot_14',
+        'Landcover_Type1 onehot_15',
+        'Landcover_Type1 onehot_16'
+      ]
       img_size: [128, 128]
       output_size: [128, 128]
-      patch_size: 2
-      embed_dim: 1024
-      depth: 8
-      decoder_depth: 2
-      num_heads: 16
-      mlp_ratio: 4
-      drop_path: 0.1
-      drop_rate: 0.1
       freeze_encoder: False
 
 # ---------------------------- DATA -------------------------------------------
