@@ -1,21 +1,12 @@
 from typing import Any
-import wandb
-import torch
-import torch.nn as nn
-from pytorch_lightning import LightningModule
-from torchvision.transforms import transforms
-import torchmetrics
-from segmentation_models_pytorch.losses import (DiceLoss, JaccardLoss,
-                                                LovaszLoss)
-from torchvision.ops import sigmoid_focal_loss
 
-from models.climax.arch import ClimaX
+import torch
+
 from models.climax.pos_embed import interpolate_pos_embed
 from models.climax.lr_scheduler import LinearWarmupCosineAnnealingLR
-from common_utils.metrics import (
-    label_sparsity,
-    prediction_sparsity
-)
+
+
+from BaseModel import BaseModel
 
 
 class ClimaXModule(BaseModel):
