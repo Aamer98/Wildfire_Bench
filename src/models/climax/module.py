@@ -185,9 +185,12 @@ class ClimaXModule(LightningModule):
             return self.loss(logits.squeeze(), y.float().squeeze())
 
     def training_step(self, batch: Any, batch_idx: int):
+        
+        self.net.train()
+        
         x, y, lead_times, variables, out_variables = batch
 
-        _, logits = self.net.forward(
+        logits = self.net.forward(
             x, 
             y, 
             lead_times, 
@@ -241,6 +244,9 @@ class ClimaXModule(LightningModule):
         return loss
 
     def validation_step(self, batch: Any, batch_idx: int):
+        
+        self.net.eval()
+        
         x, y, lead_times, variables, out_variables = batch
         
         if self.pred_range < 24:
@@ -249,7 +255,7 @@ class ClimaXModule(LightningModule):
             days = int(self.pred_range / 24)
             log_postfix = f"{days}_days"
 
-        _, logits = self.net.evaluate(
+        logits = self.net.forward(
             x,
             y,
             lead_times,
@@ -305,6 +311,8 @@ class ClimaXModule(LightningModule):
 
     def test_step(self, batch: Any, batch_idx: int):
         
+        self.net.eval()
+
         x, y, lead_times, variables, out_variables = batch
         
         if self.pred_range < 24:
@@ -313,7 +321,7 @@ class ClimaXModule(LightningModule):
             days = int(self.pred_range / 24)
             log_postfix = f"{days}_days"
 
-        all_loss_dicts, logits = self.net.evaluate(
+        logits = self.net.forward(
             x,
             y,
             lead_times,

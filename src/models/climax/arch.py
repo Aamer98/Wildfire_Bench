@@ -35,7 +35,6 @@ class ClimaX(nn.Module):
         img_size=[32, 64],
         output_size=None,
         patch_size=2,
-        output_patch_size=1,
         embed_dim=1024,
         depth=8,
         decoder_depth=2,
@@ -272,21 +271,5 @@ class ClimaX(nn.Module):
             preds = preds[:,:,:self.output_size,:self.output_size]
             preds = preds.squeeze()
 
-        if metric is None:
-            loss = None
-        # elif metric[0] == mse or metric[0] == binary_cross_entropy:
-        else:
-            loss = [m(preds.squeeze(), y.squeeze(), out_variables) for m in metric]
-        # else:
-        #     loss = [m(preds.squeeze(), y.squeeze(), out_variables, lat) for m in metric]
+        return preds
 
-        return loss, preds
-
-
-    def evaluate(self, x, y, lead_times, variables, out_variables, metrics=None, transform=None, lat=None, clim=None, log_postfix=None):
-        _, preds = self.forward(x, y, lead_times, variables, out_variables, metric=None, lat=lat)
-
-        if metrics is not None:
-            return [m(preds.squeeze(), y.squeeze(), out_variables) for m in metrics], preds
-        else:
-            return metrics, preds
